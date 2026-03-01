@@ -152,7 +152,7 @@ CORRELATION_GROUPS: dict[str, set[str]] = {
         "JNJ", "PFE", "MRK", "ABBV", "LLY", "UNH", "AMGN",
     },
     "consumer": {
-        "DIS", "NKE", "MCD", "KO", "PEP", "COST", "WMT", "HD", "T", "NFLX",
+        "DIS", "NKE", "MCD", "KO", "PEP", "COST", "WMT", "HD", "T",
     },
     "energy": {
         "XOM", "CVX",
