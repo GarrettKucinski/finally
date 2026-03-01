@@ -12,7 +12,7 @@ This is the capstone project for an agentic AI coding course. It is built entire
 
 ### First Launch
 
-The user runs a single Docker command (or a provided start script). A browser opens to `http://localhost:8000`. No login, no signup. They immediately see:
+The user runs `docker compose up` and opens `http://localhost:3000`. No login required for v1 — a default user is pre-seeded. They immediately see:
 
 - A watchlist of 10 default tickers with live-updating prices in a grid
 - $10,000 in virtual cash
@@ -45,26 +45,31 @@ The user runs a single Docker command (or a provided start script). A browser op
 
 ## 3. Architecture Overview
 
-### Single Container, Single Port
+### Two Services, Docker Compose
 
 ```
-┌─────────────────────────────────────────────────┐
-│  Docker Container (port 8000)                   │
-│                                                 │
-│  FastAPI (Python/uv)                            │
-│  ├── /api/*          REST endpoints             │
-│  ├── /api/stream/*   SSE streaming              │
-│  └── /*              Static file serving         │
-│                      (Next.js export)            │
-│                                                 │
-│  SQLite database (volume-mounted)               │
-│  Background task: market data polling/sim        │
-└─────────────────────────────────────────────────┘
+┌──────────────────────────────┐    ┌──────────────────────────────┐
+│  Frontend Container (:3000)  │    │  Backend Container (:8000)   │
+│                              │    │                              │
+│  Next.js (TypeScript)        │    │  FastAPI (Python/uv)         │
+│  ├── Pages & components      │    │  ├── /api/*     REST         │
+│  ├── Tailwind styling        │    │  ├── /api/stream/* SSE       │
+│  └── Rewrites proxy:         │    │  └── Background tasks:       │
+│      /api/* → backend:8000   │    │      market data polling/sim │
+└──────────────────────────────┘    └──────────────┬───────────────┘
+         │ user accesses :3000              │
+         └──── proxies /api/* ─────────────→┘
+                                            │
+                                            ▼
+                              ┌──────────────────────────────┐
+                              │  Neon Serverless Postgres     │
+                              │  Connected via DATABASE_URL   │
+                              └──────────────────────────────┘
 ```
 
-- **Frontend**: Next.js with TypeScript, built as a static export (`output: 'export'`), served by FastAPI as static files
-- **Backend**: FastAPI (Python), managed as a `uv` project
-- **Database**: SQLite, single file at `db/finally.db`, volume-mounted for persistence
+- **Frontend**: Next.js with TypeScript, running as a full Next.js server (not a static export). Proxies `/api/*` requests to the backend via Next.js `rewrites`
+- **Backend**: FastAPI (Python), managed as a `uv` project. API-only — no static file serving
+- **Database**: Neon serverless Postgres, connected via `DATABASE_URL` environment variable
 - **Real-time data**: Server-Sent Events (SSE) — simpler than WebSockets, one-way server→client push, works everywhere
 - **AI integration**: LiteLLM → OpenRouter (Cerebras for fast inference), with structured outputs for trade execution
 - **Market data**: Environment-variable driven — simulator by default, real data via Massive API if key provided
@@ -74,10 +79,12 @@ The user runs a single Docker command (or a provided start script). A browser op
 | Decision | Rationale |
 |---|---|
 | SSE over WebSockets | One-way push is all we need; simpler, no bidirectional complexity, universal browser support |
-| Static Next.js export | Single origin, no CORS issues, one port, one container, simple deployment |
-| SQLite over Postgres | No auth = no multi-user = no need for a database server; self-contained, zero config |
-| Single Docker container | Students run one command; no docker-compose for production, no service orchestration |
+| Decoupled frontend/backend | Independent development and deployment, full Next.js features (SSR, rewrites), clear separation of concerns |
+| Next.js rewrites for API proxy | Frontend proxies `/api/*` to backend — no CORS needed, single user-facing port, transparent to client code |
+| Neon serverless Postgres | Persistent data without Docker volumes, proper SQL types (JSONB, TIMESTAMPTZ), free tier is generous, production-ready from day one |
+| docker-compose with two services | `docker compose up` starts both frontend and backend; internal networking handles service discovery |
 | uv for Python | Fast, modern Python project management; reproducible lockfile; what students should learn |
+| Pydantic + Pydantic Settings | Validated config on startup (fail fast), typed API schemas, single source of truth for env vars |
 | Market orders only | Eliminates order book, limit order logic, partial fills — dramatically simpler portfolio math |
 
 ---
@@ -86,41 +93,37 @@ The user runs a single Docker command (or a provided start script). A browser op
 
 ```
 finally/
-├── frontend/                 # Next.js TypeScript project (static export)
+├── frontend/                 # Next.js TypeScript project
+│   └── Dockerfile            # Node-based image for the frontend
 ├── backend/                  # FastAPI uv project (Python)
-│   └── db/                   # Schema definitions, seed data, migration logic
+│   ├── schema/               # SQL schema definitions and seed data
+│   └── Dockerfile            # Python-based image for the backend
 ├── planning/                 # Project-wide documentation for agents
 │   ├── PLAN.md               # This document
 │   └── ...                   # Additional agent reference docs
-├── scripts/
-│   ├── start_mac.sh          # Launch Docker container (macOS/Linux)
-│   ├── stop_mac.sh           # Stop Docker container (macOS/Linux)
-│   ├── start_windows.ps1     # Launch Docker container (Windows PowerShell)
-│   └── stop_windows.ps1      # Stop Docker container (Windows PowerShell)
 ├── test/                     # Playwright E2E tests + docker-compose.test.yml
-├── db/                       # Volume mount target (SQLite file lives here at runtime)
-│   └── .gitkeep              # Directory exists in repo; finally.db is gitignored
-├── Dockerfile                # Multi-stage build (Node → Python)
-├── docker-compose.yml        # Optional convenience wrapper
+├── docker-compose.yml        # Primary way to run the app (both services)
 ├── .env                      # Environment variables (gitignored, .env.example committed)
 └── .gitignore
 ```
 
 ### Key Boundaries
 
-- **`frontend/`** is a self-contained Next.js project. It knows nothing about Python. It talks to the backend via `/api/*` endpoints and `/api/stream/*` SSE endpoints. Internal structure is up to the Frontend Engineer agent.
-- **`backend/`** is a self-contained uv project with its own `pyproject.toml`. It owns all server logic including database initialization, schema, seed data, API routes, SSE streaming, market data, and LLM integration. Internal structure is up to the Backend/Market Data agents.
-- **`backend/db/`** contains schema SQL definitions and seed logic. The backend lazily initializes the database on first request — creating tables and seeding default data if the SQLite file doesn't exist or is empty.
-- **`db/`** at the top level is the runtime volume mount point. The SQLite file (`db/finally.db`) is created here by the backend and persists across container restarts via Docker volume.
+- **`frontend/`** is a self-contained Next.js project with its own `Dockerfile`. It knows nothing about Python. It proxies `/api/*` requests to the backend via Next.js `rewrites` in `next.config.ts`. Internal structure is up to the Frontend Engineer agent.
+- **`backend/`** is a self-contained uv project with its own `pyproject.toml` and `Dockerfile`. It is API-only — no static file serving. It owns all server logic including database initialization, schema, seed data, API routes, SSE streaming, market data, and LLM integration. Internal structure is up to the Backend/Market Data agents.
+- **`backend/schema/`** contains SQL schema definitions and seed logic. The backend initializes the database on startup via a FastAPI lifespan event — creating tables if they don't exist and seeding default data.
 - **`planning/`** contains project-wide documentation, including this plan. All agents reference files here as the shared contract.
 - **`test/`** contains Playwright E2E tests and supporting infrastructure (e.g., `docker-compose.test.yml`). Unit tests live within `frontend/` and `backend/` respectively, following each framework's conventions.
-- **`scripts/`** contains start/stop scripts that wrap Docker commands.
+- **`docker-compose.yml`** orchestrates both services. `docker compose up` builds and starts frontend + backend. The frontend is exposed on port 3000 (user-facing), the backend on port 8000 (internal, also accessible for debugging). Services communicate via Docker's internal network.
 
 ---
 
 ## 5. Environment Variables
 
 ```bash
+# Required: Neon Postgres connection string
+DATABASE_URL=postgresql://user:password@ep-xyz.us-east-2.aws.neon.tech/finally?sslmode=require
+
 # Required: OpenRouter API key for LLM chat functionality
 OPENROUTER_API_KEY=your-openrouter-api-key-here
 
@@ -130,6 +133,9 @@ MASSIVE_API_KEY=
 
 # Optional: Set to "true" for deterministic mock LLM responses (testing)
 LLM_MOCK=false
+
+# Frontend only: backend URL for Next.js rewrites proxy (set by docker-compose)
+BACKEND_URL=http://backend:8000
 ```
 
 ### Behavior
@@ -137,7 +143,7 @@ LLM_MOCK=false
 - If `MASSIVE_API_KEY` is set and non-empty → backend uses Massive REST API for market data
 - If `MASSIVE_API_KEY` is absent or empty → backend uses the built-in market simulator
 - If `LLM_MOCK=true` → backend returns deterministic mock LLM responses (for E2E tests)
-- The backend reads `.env` from the project root (mounted into the container or read via docker `--env-file`)
+- All env vars are loaded and validated via Pydantic Settings on startup — missing required vars cause an immediate, clear error
 
 ---
 
@@ -183,65 +189,93 @@ Both the simulator and the Massive client implement the same abstract interface.
 
 ## 7. Database
 
-### SQLite with Lazy Initialization
+### Neon Serverless Postgres
 
-The backend checks for the SQLite database on startup (or first request). If the file doesn't exist or tables are missing, it creates the schema and seeds default data. This means:
+The backend connects to a Neon Postgres database via the `DATABASE_URL` environment variable (managed by Pydantic Settings — see below). On startup (via FastAPI lifespan event), it runs `CREATE TABLE IF NOT EXISTS` statements and seeds default data if tables are empty. This means:
 
 - No separate migration step
 - No manual database setup
-- Fresh Docker volumes start with a clean, seeded database automatically
+- A fresh Neon database is automatically initialized on first run
+- Data persists in Neon — no Docker volumes needed for state
+
+Use `asyncpg` as the async Postgres driver. Connection pooling is handled by Neon's serverless proxy automatically.
+
+### Configuration with Pydantic Settings
+
+All environment variables are managed via a Pydantic Settings class:
+
+```python
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+class Settings(BaseSettings):
+    database_url: str
+    openrouter_api_key: str
+    massive_api_key: str = ""
+    llm_mock: bool = False
+
+    model_config = SettingsConfigDict(env_file=".env")
+```
+
+This provides validation on startup (fail fast if `DATABASE_URL` is missing), type coercion (e.g., `LLM_MOCK=true` → `bool`), and a single source of truth for all configuration. Pydantic models are also used for API request/response schemas throughout the backend.
 
 ### Schema
 
-All tables include a `user_id` column defaulting to `"default"`. This is hardcoded for now (single-user) but enables future multi-user support without schema migration.
+All tables include a `user_id` column defaulting to `'default'`. This is hardcoded for now (single-user) but enables future multi-user support without schema migration.
+
+**users** — User table
+- `id` UUID PRIMARY KEY (default: `gen_random_uuid()`)
+- `email` VARCHAR(50) NOT NULL UNIQUE
+- `password` VARCHAR(100) NOT NULL
 
 **users_profile** — User state (cash balance)
-- `id` TEXT PRIMARY KEY (default: `"default"`)
-- `cash_balance` REAL (default: `10000.0`)
-- `created_at` TEXT (ISO timestamp)
+- `id` UUID PRIMARY KEY (default: `gen_random_uuid()`)
+- `user_id` UUID FOREIGN KEY REFERENCES users(id)
+- `cash_balance` DOUBLE PRECISION (default: `10000.0`)
+- `created_at` TIMESTAMPTZ (default: `NOW()`)
 
 **watchlist** — Tickers the user is watching
-- `id` TEXT PRIMARY KEY (UUID)
-- `user_id` TEXT (default: `"default"`)
-- `ticker` TEXT
-- `added_at` TEXT (ISO timestamp)
+- `id` UUID PRIMARY KEY (default: `gen_random_uuid()`)
+- `user_id` UUID FOREIGN KEY REFERENCES users(id)
+- `ticker` TEXT NOT NULL
+- `added_at` TIMESTAMPTZ (default: `NOW()`)
 - UNIQUE constraint on `(user_id, ticker)`
 
 **positions** — Current holdings (one row per ticker per user)
-- `id` TEXT PRIMARY KEY (UUID)
-- `user_id` TEXT (default: `"default"`)
-- `ticker` TEXT
-- `quantity` REAL (fractional shares supported)
-- `avg_cost` REAL
-- `updated_at` TEXT (ISO timestamp)
+- `id` UUID PRIMARY KEY (default: `gen_random_uuid()`)
+- `user_id` UUID FOREIGN KEY REFERENCES users(id)
+- `ticker` TEXT NOT NULL
+- `quantity` DOUBLE PRECISION (fractional shares supported)
+- `avg_cost` DOUBLE PRECISION
+- `updated_at` TIMESTAMPTZ (default: `NOW()`)
 - UNIQUE constraint on `(user_id, ticker)`
 
 **trades** — Trade history (append-only log)
-- `id` TEXT PRIMARY KEY (UUID)
-- `user_id` TEXT (default: `"default"`)
-- `ticker` TEXT
-- `side` TEXT (`"buy"` or `"sell"`)
-- `quantity` REAL (fractional shares supported)
-- `price` REAL
-- `executed_at` TEXT (ISO timestamp)
+- `id` UUID PRIMARY KEY (default: `gen_random_uuid()`)
+- `user_id` UUID FOREIGN KEY REFERENCES users(id)
+- `ticker` TEXT NOT NULL
+- `side` TEXT NOT NULL (`'buy'` or `'sell'`)
+- `quantity` DOUBLE PRECISION (fractional shares supported)
+- `price` DOUBLE PRECISION
+- `executed_at` TIMESTAMPTZ (default: `NOW()`)
 
-**portfolio_snapshots** — Portfolio value over time (for P&L chart). Recorded every 30 seconds by a background task, and immediately after each trade execution.
-- `id` TEXT PRIMARY KEY (UUID)
-- `user_id` TEXT (default: `"default"`)
-- `total_value` REAL
-- `recorded_at` TEXT (ISO timestamp)
+**portfolio_snapshots** — Portfolio value over time (for P&L chart). Recorded every 30 seconds by a background task, and immediately after each trade execution. A background cleanup task deletes rows older than 24 hours.
+- `id` UUID PRIMARY KEY (default: `gen_random_uuid()`)
+- `user_id` UUID FOREIGN KEY REFERENCES users(id)
+- `total_value` DOUBLE PRECISION
+- `recorded_at` TIMESTAMPTZ (default: `NOW()`)
 
 **chat_messages** — Conversation history with LLM
-- `id` TEXT PRIMARY KEY (UUID)
-- `user_id` TEXT (default: `"default"`)
-- `role` TEXT (`"user"` or `"assistant"`)
-- `content` TEXT
-- `actions` TEXT (JSON — trades executed, watchlist changes made; null for user messages)
-- `created_at` TEXT (ISO timestamp)
+- `id` UUID PRIMARY KEY (default: `gen_random_uuid()`)
+- `user_id` UUID FOREIGN KEY REFERENCES users(id)
+- `role` TEXT NOT NULL (`'user'` or `'assistant'`)
+- `content` TEXT NOT NULL
+- `actions` JSONB (trades executed, watchlist changes made; null for user messages)
+- `created_at` TIMESTAMPTZ (default: `NOW()`)
 
 ### Default Seed Data
 
-- One user profile: `id="default"`, `cash_balance=10000.0`
+- One user: seeded with a fixed UUID, email `default@finally.app`, placeholder password
+- One user profile: linked to the default user, `cash_balance=10000.0`
 - Ten watchlist entries: AAPL, GOOGL, MSFT, AMZN, TSLA, NVDA, META, JPM, V, NFLX
 
 ---
@@ -277,6 +311,16 @@ All tables include a `user_id` column defaulting to `"default"`. This is hardcod
 |--------|------|-------------|
 | GET | `/api/health` | Health check (for Docker/deployment) |
 
+### Error Response Format
+
+All error responses use a consistent Pydantic model:
+
+```json
+{"error": "Short message", "detail": "Longer explanation"}
+```
+
+HTTP status codes: 400 (validation/bad request), 404 (not found), 500 (server error).
+
 ---
 
 ## 9. LLM Integration
@@ -290,7 +334,7 @@ There is an OPENROUTER_API_KEY in the .env file in the project root.
 When the user sends a chat message, the backend:
 
 1. Loads the user's current portfolio context (cash, positions with P&L, watchlist with live prices, total portfolio value)
-2. Loads recent conversation history from the `chat_messages` table
+2. Loads the last 20 messages from the `chat_messages` table
 3. Constructs a prompt with a system message, portfolio context, conversation history, and the user's new message
 4. Calls the LLM via LiteLLM → OpenRouter, requesting structured output, using the cerebras-inference skill
 5. Parses the complete structured JSON response
@@ -352,7 +396,7 @@ When `LLM_MOCK=true`, the backend returns deterministic mock responses instead o
 
 The frontend is a single-page application with a dense, terminal-inspired layout. The specific component architecture and layout system is up to the Frontend Engineer, but the UI should include these elements:
 
-- **Watchlist panel** — grid/table of watched tickers with: ticker symbol, current price (flashing green/red on change), daily change %, and a sparkline mini-chart (accumulated from SSE since page load)
+- **Watchlist panel** — grid/table of watched tickers with: ticker symbol, current price (flashing green/red on change), change % (vs seed price), and a sparkline mini-chart (accumulated from SSE since page load)
 - **Main chart area** — larger chart for the currently selected ticker, with at minimum price over time. Clicking a ticker in the watchlist selects it here.
 - **Portfolio heatmap** — treemap visualization where each rectangle is a position, sized by portfolio weight, colored by P&L (green = profit, red = loss)
 - **P&L chart** — line chart showing total portfolio value over time, using data from `portfolio_snapshots`
@@ -366,56 +410,57 @@ The frontend is a single-page application with a dense, terminal-inspired layout
 - Use `EventSource` for SSE connection to `/api/stream/prices`
 - Canvas-based charting library preferred (Lightweight Charts or Recharts) for performance
 - Price flash effect: on receiving a new price, briefly apply a CSS class with background color transition, then remove it
-- All API calls go to the same origin (`/api/*`) — no CORS configuration needed
+- All API calls use relative paths (`/api/*`) — Next.js `rewrites` in `next.config.ts` proxy these to the backend service, so no CORS configuration is needed
 - Tailwind CSS for styling with a custom dark theme
+- Next.js runs as a full server (not static export) — enables `rewrites`, SSR if needed, and standard Next.js development workflow
 
 ---
 
 ## 11. Docker & Deployment
 
-### Multi-Stage Dockerfile
+### Separate Dockerfiles
 
+**`frontend/Dockerfile`** (Node 20 slim):
+- Copy `frontend/` source
+- `npm install && npm run build`
+- Expose port 3000
+- CMD: `npm start` (runs `next start`)
+
+**`backend/Dockerfile`** (Python 3.12 slim):
+- Install uv
+- Copy `backend/` source
+- `uv sync` (install dependencies from lockfile)
+- Expose port 8000
+- CMD: `uvicorn` serving FastAPI app
+
+### Docker Compose (Primary Run Method)
+
+`docker-compose.yml` orchestrates both services:
+
+```yaml
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - BACKEND_URL=http://backend:8000
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file: .env
 ```
-Stage 1: Node 20 slim
-  - Copy frontend/
-  - npm install && npm run build (produces static export)
 
-Stage 2: Python 3.12 slim
-  - Install uv
-  - Copy backend/
-  - uv sync (install Python dependencies from lockfile)
-  - Copy frontend build output into a static/ directory
-  - Expose port 8000
-  - CMD: uvicorn serving FastAPI app
-```
-
-FastAPI serves the static frontend files and all API routes on port 8000.
-
-### Docker Volume
-
-The SQLite database persists via a named Docker volume:
-
-```bash
-docker run -v finally-data:/app/db -p 8000:8000 --env-file .env finally
-```
-
-The `db/` directory in the project root maps to `/app/db` in the container. The backend writes `finally.db` to this path.
-
-### Start/Stop Scripts
-
-**`scripts/start_mac.sh`** (macOS/Linux):
-- Builds the Docker image if not already built (or if `--build` flag passed)
-- Runs the container with the volume mount, port mapping, and `.env` file
-- Prints the URL to access the app
-- Optionally opens the browser
-
-**`scripts/stop_mac.sh`** (macOS/Linux):
-- Stops and removes the running container
-- Does NOT remove the volume (data persists)
-
-**`scripts/start_windows.ps1`** / **`scripts/stop_windows.ps1`**: PowerShell equivalents for Windows.
-
-All scripts should be idempotent — safe to run multiple times.
+- Start: `docker compose up` (add `--build` to rebuild)
+- Stop: `docker compose down`
+- User accesses `http://localhost:3000` — the frontend proxies `/api/*` to the backend via Next.js rewrites
+- Backend is also accessible at `http://localhost:8000` for direct API testing/debugging
+- No Docker volumes needed — all persistent data lives in Neon Postgres
+- Both containers are stateless
 
 ### Optional Cloud Deployment
 
@@ -442,7 +487,7 @@ The container is designed to deploy to AWS App Runner, Render, or any container 
 
 ### E2E Tests (in `test/`)
 
-**Infrastructure**: A separate `docker-compose.test.yml` in `test/` that spins up the app container plus a Playwright container. This keeps browser dependencies out of the production image.
+**Infrastructure**: A separate `docker-compose.test.yml` in `test/` that spins up both the frontend and backend containers plus a Playwright container. This keeps browser dependencies out of the production images.
 
 **Environment**: Tests run with `LLM_MOCK=true` by default for speed and determinism.
 
@@ -454,3 +499,32 @@ The container is designed to deploy to AWS App Runner, Render, or any container 
 - Portfolio visualization: heatmap renders with correct colors, P&L chart has data points
 - AI chat (mocked): send a message, receive a response, trade execution appears inline
 - SSE resilience: disconnect and verify reconnection
+
+---
+
+## 13. Decisions Log
+
+All review items have been resolved. Answers are recorded here for reference.
+
+| Item | Decision |
+|---|---|
+| Q1. Simulator tickers | Simulator generates prices for all watchlist tickers. Hardcoded seed prices for ~50 popular US tickers; unknown tickers seed at $100. |
+| Q2. Ticker validation | Accept 1-5 uppercase alpha characters only. Trim and uppercase on input. Reject anything else with 400. |
+| Q3. Zero positions | Delete the row when quantity hits 0. Future buys create a fresh row. |
+| Q4. Change % baseline | Use seed price as the baseline. Label as "Change" (not "Daily change"). |
+| Q5. Chat history limit | Last 20 messages sent to the LLM. |
+| Q6. Massive API | Massive is the API brand name (massivecorp.com), a financial data provider built on Polygon.io. Keeping it for v1. |
+| Q7. Fill price | Latest value in the in-memory price cache. No staleness check. |
+| Q8. Error format | `{"error": "Short message", "detail": "Longer explanation"}` with standard HTTP codes (400/404/500). Defined as a Pydantic model. |
+| S1. user_id / auth | `users` table with email/password exists in schema for future auth. No login for v1 — default user is pre-seeded. All other tables FK to `users(id)` via UUID `user_id`. |
+| S2. Primary keys | UUID with `gen_random_uuid()`. |
+| S3. Massive API | Keep for v1. |
+| S4. Correlated moves | Keep. Implement correlation matrix for realistic sector co-movement. |
+| S5. Start scripts | Removed. docker-compose only. |
+| S6. Snapshot retention | Keep last 24 hours. Background task deletes older rows. |
+| S7. docker-compose | Primary and only run method. |
+| N1. .env.example | Create from .env file. |
+| N2. Watchlist endpoint | Returns tickers with latest prices (coupled to price cache). |
+| N3. Charting library | Lightweight Charts. |
+| N4. Malformed LLM JSON | Retry once, then return fallback error message with no actions. |
+| N5. Fractional shares | Yes, UI supports fractional input. |

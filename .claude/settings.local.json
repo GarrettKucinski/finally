@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_linear_linear__list_teams",
+      "mcp__plugin_linear_linear__save_project",
+      "mcp__plugin_linear_linear__save_milestone",
+      "mcp__plugin_linear_linear__save_issue",
+      "WebFetch(domain:polygon.readthedocs.io)",
+      "WebFetch(domain:stockanalysis.com)",
+      "WebFetch(domain:massive.com)",
+      "WebSearch"
+    ]
+  },
+  "sandbox": {
+    "enabled": false,
+    "autoAllowBashIfSandboxed": false
+  }
+}
