@@ -84,7 +84,8 @@ class PriceCache:
         Used by the SSE generator for change detection: if the version has
         not changed since the last send, skip serialization.
         """
-        return self._version
+        with self._lock:
+            return self._version
 
     def __len__(self) -> int:
         with self._lock:

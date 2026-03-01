@@ -98,6 +98,19 @@ The implementation looks correct — version-based change detection, proper SSE 
 | **Minor** | `version` property reads without lock | `cache.py:87` |
 | **Style** | Redundant try/except around logging | `factory.py:38-51` |
 
+## Fixes Applied (follow-up PR)
+
+All findings from this review have been resolved:
+
+| Finding | Resolution |
+|---|---|
+| `stream.py` has zero tests | Added 13 tests covering: retry header, version-based skip logic, JSON payload format, empty cache, disconnection, CancelledError, router factory |
+| NFLX in two correlation groups | Removed from `consumer`; NFLX is categorized as `tech` only |
+| `version` property reads without lock | Wrapped in `with self._lock` for portability |
+| Redundant try/except around logging in `factory.py` | Moved logger to module level, removed try/except blocks |
+
+**Final test results: 113 passed, 96% line coverage** (up from 100 tests / 88% coverage).
+
 ## Verdict
 
-The market data backend is production-ready for the project's needs. The architecture is sound, the math is correct, and the test suite is thorough (with the two bugs now fixed). The main gap is the absence of tests for `stream.py`, which should be addressed before the full application is integrated. Overall this is clean, well-documented code that follows Python best practices.
+The market data backend is production-ready. The architecture is sound, the math is correct, and the test suite is comprehensive. All review findings have been addressed.
