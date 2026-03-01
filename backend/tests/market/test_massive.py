@@ -48,6 +48,7 @@ class TestMassiveDataSourcePollOnce:
             make_mock_snapshot("GOOGL", 175.25, 1709312400000.0),
         ]
         source._client = MagicMock()
+        source._tickers = ["AAPL", "GOOGL"]
         with patch.object(source, "_fetch_snapshots", return_value=snapshots):
             await source._poll_once()
 
@@ -59,6 +60,7 @@ class TestMassiveDataSourcePollOnce:
         timestamp_ms = 1709312400000.0  # 1709312400.0 in seconds
         snapshots = [make_mock_snapshot("AAPL", 191.50, timestamp_ms)]
         source._client = MagicMock()
+        source._tickers = ["AAPL"]
         with patch.object(source, "_fetch_snapshots", return_value=snapshots):
             await source._poll_once()
 
