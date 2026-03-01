@@ -10,12 +10,15 @@ The returned source is unstarted. The caller must await source.start(tickers).
 
 from __future__ import annotations
 
+import logging
 import os
 
 from .cache import PriceCache
 from .interface import MarketDataSource
 from .massive_client import MassiveDataSource
 from .simulator import SimulatorDataSource
+
+logger = logging.getLogger(__name__)
 
 
 def create_market_data_source(price_cache: PriceCache) -> MarketDataSource:
@@ -34,19 +37,8 @@ def create_market_data_source(price_cache: PriceCache) -> MarketDataSource:
     api_key = os.environ.get("MASSIVE_API_KEY", "").strip()
 
     if api_key:
-        logger_msg = "MASSIVE_API_KEY found — using MassiveDataSource (real market data)"
-        try:
-            import logging
-            logging.getLogger(__name__).info(logger_msg)
-        except Exception:
-            pass
+        logger.info("MASSIVE_API_KEY found — using MassiveDataSource (real market data)")
         return MassiveDataSource(api_key=api_key, price_cache=price_cache)
     else:
-        try:
-            import logging
-            logging.getLogger(__name__).info(
-                "No MASSIVE_API_KEY — using SimulatorDataSource (GBM simulation)"
-            )
-        except Exception:
-            pass
+        logger.info("No MASSIVE_API_KEY — using SimulatorDataSource (GBM simulation)")
         return SimulatorDataSource(price_cache=price_cache)
