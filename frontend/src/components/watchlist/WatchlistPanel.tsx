@@ -7,6 +7,8 @@ import { PriceFlash } from "@/components/ui/PriceFlash";
 import { Sparkline } from "@/components/watchlist/Sparkline";
 import { formatPercent } from "@/lib/format";
 
+const EMPTY_HISTORY: number[] = [];
+
 function WatchlistRow({
   ticker,
   onRemove,
@@ -15,7 +17,7 @@ function WatchlistRow({
   onRemove: (ticker: string) => void;
 }) {
   const priceData = usePriceStore((s) => s.prices[ticker]);
-  const history = usePriceStore((s) => s.priceHistory[ticker] || []);
+  const history = usePriceStore((s) => s.priceHistory[ticker] ?? EMPTY_HISTORY);
 
   return (
     <div className="group flex items-center gap-2 border-b border-border-default px-3 py-2 hover:bg-surface-tertiary">
