@@ -30,11 +30,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. All 7 database tables exist after startup (users, users_profile, watchlist, positions, trades, portfolio_snapshots, chat_messages)
   3. Default user is seeded with $10,000 cash and 10 watchlist tickers on first run, and seed is skipped on subsequent runs
   4. `GET /api/health` returns 200 with a successful DB connectivity check
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md — Settings, DB pool lifecycle, SQL schema, seed data, FastAPI app with lifespan
+- [ ] 01-02-PLAN.md — Health check endpoint with DB connectivity verification
 
 ### Phase 2: Portfolio & Watchlist APIs
 **Goal**: Users can execute trades, view their portfolio with P&L, manage their watchlist, and the system records portfolio snapshots over time -- the core verbs of the trading platform
@@ -125,7 +125,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Database Foundation | 0/2 | Not started | - |
+| 1. Database Foundation | 0/2 | Planned | - |
 | 2. Portfolio & Watchlist APIs | 0/3 | Not started | - |
 | 3. LLM Chat Integration | 0/2 | Not started | - |
 | 4. Frontend Foundation | 0/3 | Not started | - |
