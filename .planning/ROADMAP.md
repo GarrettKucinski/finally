@@ -12,7 +12,7 @@ FinAlly is a brownfield project with the market data subsystem already complete 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Database Foundation** - Asyncpg pool, schema creation, seed data, and health check endpoint
+- [x] **Phase 1: Database Foundation** - Asyncpg pool, schema creation, seed data, and health check endpoint (completed 2026-03-02)
 - [ ] **Phase 2: Portfolio & Watchlist APIs** - Trade execution, portfolio queries, watchlist CRUD, snapshot background tasks
 - [ ] **Phase 3: LLM Chat Integration** - AI assistant with structured outputs, auto-execution pipeline, mock mode
 - [ ] **Phase 4: Frontend Foundation** - Next.js dark terminal UI, SSE client, watchlist with live prices, trade bar, positions table
@@ -125,7 +125,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Database Foundation | 0/2 | Planned | - |
+| 1. Database Foundation | 0/2 | Complete    | 2026-03-02 |
 | 2. Portfolio & Watchlist APIs | 0/3 | Not started | - |
 | 3. LLM Chat Integration | 0/2 | Not started | - |
 | 4. Frontend Foundation | 0/3 | Not started | - |
