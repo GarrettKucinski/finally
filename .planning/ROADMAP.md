@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Database Foundation** - Asyncpg pool, schema creation, seed data, and health check endpoint (completed 2026-03-02)
 - [ ] **Phase 2: Portfolio & Watchlist APIs** - Trade execution, portfolio queries, watchlist CRUD, snapshot background tasks
 - [ ] **Phase 3: LLM Chat Integration** - AI assistant with structured outputs, auto-execution pipeline, mock mode
-- [ ] **Phase 4: Frontend Foundation** - Next.js dark terminal UI, SSE client, watchlist with live prices, trade bar, positions table
+- [x] **Phase 4: Frontend Foundation** - Next.js dark terminal UI, SSE client, watchlist with live prices, trade bar, positions table (completed 2026-03-02)
 - [ ] **Phase 5: Visualizations & Chat Panel** - Sparklines, detail chart, portfolio heatmap, P&L chart, AI chat sidebar
 - [ ] **Phase 6: Docker & E2E Tests** - Dockerfiles, docker-compose orchestration, Playwright E2E test suite
 
@@ -78,12 +78,11 @@ Plans:
   3. Connection status indicator in the header shows green (connected), yellow (reconnecting), or red (disconnected) reflecting the actual SSE connection state
   4. User can buy and sell shares using the trade bar, see their positions update in the positions table (ticker, qty, avg cost, current price, P&L), and see cash/total value update in the header
   5. API errors display as toast or inline messages without crashing the UI, and all API calls use relative `/api/*` paths proxied through Next.js rewrites
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [x] 04-01-PLAN.md -- Next.js scaffold, dark theme, Zustand stores, SSE hook, typed API client
-- [ ] 04-02: TBD
-- [ ] 04-03: TBD
+- [x] 04-02-PLAN.md -- UI components: Header, WatchlistPanel, PositionsTable, TradeBar, Dashboard layout
 
 ### Phase 5: Visualizations & Chat Panel
 **Goal**: Users experience the differentiating features -- sparkline mini-charts, a detailed ticker chart, portfolio heatmap, P&L history chart, and an AI chat sidebar with inline action cards
@@ -127,6 +126,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Database Foundation | 0/2 | Complete    | 2026-03-02 |
 | 2. Portfolio & Watchlist APIs | 1/2 | In Progress | - |
 | 3. LLM Chat Integration | 0/2 | Not started | - |
-| 4. Frontend Foundation | 1/3 | In Progress | - |
+| 4. Frontend Foundation | 2/2 | Complete | 2026-03-02 |
 | 5. Visualizations & Chat Panel | 0/3 | Not started | - |
 | 6. Docker & E2E Tests | 0/2 | Not started | - |

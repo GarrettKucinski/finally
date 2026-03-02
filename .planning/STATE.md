@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in-progress
-last_updated: "2026-03-02T16:01:41Z"
+last_updated: "2026-03-02T16:38:40Z"
 progress:
   total_phases: 6
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 8
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Users can watch live-streaming prices, trade a simulated portfolio, and chat with an AI assistant that can both analyze and execute trades -- all in a single, polished dark-themed terminal UI.
-**Current focus:** Phase 4 in progress. Frontend foundation scaffold complete (Next.js, theme, stores, SSE, API client). Next: Plan 04-02 (UI components).
+**Current focus:** Phase 4 complete. Full trading terminal UI with live prices, flash animations, trade execution, and positions monitoring. Next: Phase 5 (visualizations and chat panel).
 
 ## Current Position
 
-Phase: 4 of 6 (Frontend Foundation)
-Plan: 1 of 2 in current phase -- COMPLETE
-Status: Executing Phase 04
-Last activity: 2026-03-02 -- Completed 04-01 (Next.js scaffold, stores, SSE hook, API client)
+Phase: 4 of 6 (Frontend Foundation) -- COMPLETE
+Plan: 2 of 2 in current phase -- COMPLETE
+Status: Phase 04 Complete, ready for Phase 05
+Last activity: 2026-03-02 -- Completed 04-02 (UI components: Header, WatchlistPanel, PositionsTable, TradeBar, Dashboard)
 
-Progress: [#######...] 58%
+Progress: [########..] 67%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: 3.0min
-- Total execution time: 0.35 hours
+- Total plans completed: 8
+- Average duration: 3.1min
+- Total execution time: 0.42 hours
 
 **By Phase:**
 
@@ -43,10 +43,10 @@ Progress: [#######...] 58%
 | 01-database-foundation | 2 | 5min | 2.5min |
 | 02-portfolio-watchlist-apis | 2 | 7min | 3.5min |
 | 03-llm-chat-integration | 2 | 6min | 3.0min |
-| 04-frontend-foundation | 1 | 3min | 3.0min |
+| 04-frontend-foundation | 2 | 8min | 4.0min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (3min), 03-01 (3min), 03-02 (3min), 04-01 (3min)
+- Last 5 plans: 03-01 (3min), 03-02 (3min), 04-01 (3min), 04-02 (5min)
 - Trend: Steady
 
 *Updated after each plan completion*
@@ -82,6 +82,11 @@ Recent decisions affecting current work:
 - 04-01: Geist Mono as primary font for terminal aesthetic (monospace throughout)
 - 04-01: Tailwind v4 CSS @theme for color tokens -- no tailwind.config.js file
 - 04-01: Root .gitignore lib/ scoped to /lib/ to avoid ignoring frontend/src/lib/
+- 04-02: PriceFlash uses useRef for timer to handle rapid SSE updates without stale closures
+- 04-02: WatchlistRow is a separate child component subscribing per-ticker to avoid re-rendering entire list
+- 04-02: Header computes live portfolio total from SSE prices (not API response)
+- 04-02: PositionsTable computes live P&L from price store instead of static API values
+- 04-02: SSE EventSource connects directly to backend with CORS (bypasses Next.js rewrites for streaming)
 
 ### Pending Todos
 
@@ -95,5 +100,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 04-01-PLAN.md
+Stopped at: Completed 04-02-PLAN.md (Phase 04 complete)
 Resume file: None

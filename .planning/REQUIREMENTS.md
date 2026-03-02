@@ -54,20 +54,20 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **UI-02**: Tailwind CSS with custom dark theme using accent colors: yellow `#ecad0a`, blue `#209dd7`, purple `#753991`
 - [x] **UI-03**: SSE client connects to `/api/stream/prices` via native EventSource with auto-reconnect
 - [x] **UI-04**: Connection status indicator in header: green dot (connected), yellow (reconnecting), red (disconnected)
-- [ ] **UI-05**: Price flash animations: brief green (uptick) or red (downtick) background highlight fading over ~500ms via CSS transitions
+- [x] **UI-05**: Price flash animations: brief green (uptick) or red (downtick) background highlight fading over ~500ms via CSS transitions
 - [x] **UI-06**: Consistent error display (toast or inline) for API errors without crashing the UI
 - [x] **UI-07**: All API calls use relative paths (`/api/*`) proxied to backend via Next.js rewrites
 
 ### Visualization
 
-- [ ] **VIZ-01**: Watchlist panel shows tickers with live-updating current price, change %, and sparkline mini-chart
+- [x] **VIZ-01**: Watchlist panel shows tickers with live-updating current price, change %, and sparkline mini-chart
 - [ ] **VIZ-02**: Sparkline mini-charts accumulate price history from SSE since page load and render progressively
 - [ ] **VIZ-03**: Clicking a ticker in the watchlist shows a detailed chart in the main chart area using Lightweight Charts
 - [ ] **VIZ-04**: Portfolio heatmap (treemap) with rectangles sized by portfolio weight and colored by P&L (green=profit, red=loss)
 - [ ] **VIZ-05**: P&L chart showing total portfolio value over time as a line chart from portfolio_snapshots data
-- [ ] **VIZ-06**: Positions table showing ticker, quantity, avg cost, current price, unrealized P&L, and % change
-- [ ] **VIZ-07**: Trade bar with ticker input, quantity input, buy button, and sell button for market orders
-- [ ] **VIZ-08**: Header displaying portfolio total value (updating live), connection status dot, and cash balance
+- [x] **VIZ-06**: Positions table showing ticker, quantity, avg cost, current price, unrealized P&L, and % change
+- [x] **VIZ-07**: Trade bar with ticker input, quantity input, buy button, and sell button for market orders
+- [x] **VIZ-08**: Header displaying portfolio total value (updating live), connection status dot, and cash balance
 - [ ] **VIZ-09**: AI chat panel (docked/collapsible sidebar) with message input, scrolling conversation history, and loading indicator
 - [ ] **VIZ-10**: AI-executed trades and watchlist changes rendered as structured visual cards inline in chat (not just text)
 
@@ -164,13 +164,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UI-02 | Phase 4: Frontend Foundation | Complete |
 | UI-03 | Phase 4: Frontend Foundation | Complete |
 | UI-04 | Phase 4: Frontend Foundation | Complete |
-| UI-05 | Phase 4: Frontend Foundation | Pending |
+| UI-05 | Phase 4: Frontend Foundation | Complete |
 | UI-06 | Phase 4: Frontend Foundation | Complete |
 | UI-07 | Phase 4: Frontend Foundation | Complete |
-| VIZ-01 | Phase 4: Frontend Foundation | Pending |
-| VIZ-06 | Phase 4: Frontend Foundation | Pending |
-| VIZ-07 | Phase 4: Frontend Foundation | Pending |
-| VIZ-08 | Phase 4: Frontend Foundation | Pending |
+| VIZ-01 | Phase 4: Frontend Foundation | Complete |
+| VIZ-06 | Phase 4: Frontend Foundation | Complete |
+| VIZ-07 | Phase 4: Frontend Foundation | Complete |
+| VIZ-08 | Phase 4: Frontend Foundation | Complete |
 | VIZ-02 | Phase 5: Visualizations & Chat Panel | Pending |
 | VIZ-03 | Phase 5: Visualizations & Chat Panel | Pending |
 | VIZ-04 | Phase 5: Visualizations & Chat Panel | Pending |
