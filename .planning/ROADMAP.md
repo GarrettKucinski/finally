@@ -46,12 +46,11 @@ Plans:
   3. Buy with insufficient cash and sell with insufficient shares are rejected with clear error messages
   4. Portfolio snapshots are recorded every 30 seconds and immediately after each trade, with snapshots older than 24 hours cleaned up automatically
   5. Watchlist CRUD works end-to-end: adding a ticker registers it with the market data source (prices start streaming), removing it unregisters it (prices stop)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01-PLAN.md — Pydantic models, portfolio service (trade execution, P&L), portfolio & history routes
+- [ ] 02-02-PLAN.md — Watchlist CRUD with market data sync, background snapshot tasks, lifespan wiring
 
 ### Phase 3: LLM Chat Integration
 **Goal**: Users can chat with an AI assistant that understands their portfolio, suggests and executes trades, and manages their watchlist through natural language
@@ -126,7 +125,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Database Foundation | 0/2 | Complete    | 2026-03-02 |
-| 2. Portfolio & Watchlist APIs | 0/3 | Not started | - |
+| 2. Portfolio & Watchlist APIs | 0/2 | Not started | - |
 | 3. LLM Chat Integration | 0/2 | Not started | - |
 | 4. Frontend Foundation | 0/3 | Not started | - |
 | 5. Visualizations & Chat Panel | 0/3 | Not started | - |
