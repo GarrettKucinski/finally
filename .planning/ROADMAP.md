@@ -62,11 +62,11 @@ Plans:
   3. Trades and watchlist changes specified by the LLM are auto-executed through the same code paths as manual operations, with failures reported in the response
   4. Chat messages and executed actions are persisted to the database (retrievable across sessions)
   5. When `LLM_MOCK=true`, deterministic mock responses are returned without calling OpenRouter (enabling testing without an API key)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [ ] 03-01-PLAN.md -- Chat models, service (context, history, mock mode, persistence), route handler, main.py wiring
+- [ ] 03-02-PLAN.md -- Real LLM call via LiteLLM/Cerebras, trade and watchlist auto-execution, error collection
 
 ### Phase 4: Frontend Foundation
 **Goal**: Users see a dark, data-dense trading terminal with live-streaming prices, can interact with their watchlist, execute trades, and monitor positions -- the core interactive experience

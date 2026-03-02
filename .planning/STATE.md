@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-02T08:54:09.828Z"
+status: in-progress
+last_updated: "2026-03-02T15:24:17Z"
 progress:
-  total_phases: 2
+  total_phases: 6
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Users can watch live-streaming prices, trade a simulated portfolio, and chat with an AI assistant that can both analyze and execute trades -- all in a single, polished dark-themed terminal UI.
-**Current focus:** Phase 2 complete. Ready for Phase 3: LLM Chat Integration
+**Current focus:** Phase 3 in progress. Chat foundation (models, service, route) complete. Next: LLM integration + action auto-execution.
 
 ## Current Position
 
-Phase: 2 of 6 (Portfolio & Watchlist APIs) -- COMPLETE
-Plan: 2 of 2 in current phase -- COMPLETE
-Status: Phase 2 Complete
-Last activity: 2026-03-02 -- Completed 02-02 (Watchlist CRUD with market data sync, background snapshot tasks)
+Phase: 3 of 6 (LLM Chat Integration)
+Plan: 1 of 2 in current phase -- COMPLETE
+Status: Plan 03-01 Complete
+Last activity: 2026-03-02 -- Completed 03-01 (Chat models, service with mock mode, route, main.py wiring)
 
-Progress: [####......] 33%
+Progress: [#####.....] 42%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 3.0min
-- Total execution time: 0.2 hours
+- Total execution time: 0.25 hours
 
 **By Phase:**
 
@@ -42,9 +42,10 @@ Progress: [####......] 33%
 |-------|-------|-------|----------|
 | 01-database-foundation | 2 | 5min | 2.5min |
 | 02-portfolio-watchlist-apis | 2 | 7min | 3.5min |
+| 03-llm-chat-integration | 1 | 3min | 3.0min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4min), 01-02 (1min), 02-01 (4min), 02-02 (3min)
+- Last 5 plans: 01-02 (1min), 02-01 (4min), 02-02 (3min), 03-01 (3min)
 - Trend: Steady
 
 *Updated after each plan completion*
@@ -72,6 +73,9 @@ Recent decisions affecting current work:
 - 02-02: ON CONFLICT DO NOTHING + RETURNING id pattern for duplicate detection (cleaner than catching UniqueViolationError)
 - 02-02: Background tasks cancelled before DB pool close to prevent shutdown errors
 - 02-02: Market source sync (add_ticker/remove_ticker) always called after DB mutation succeeds
+- 03-01: User message persisted to DB before LLM call to survive LLM failures (Pitfall 6)
+- 03-01: Mock mode bypasses _call_llm entirely using settings.llm_mock flag
+- 03-01: _execute_actions is a stub returning empty results (implemented in Plan 03-02)
 
 ### Pending Todos
 
@@ -85,5 +89,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 02-02-PLAN.md (Phase 2 complete)
+Stopped at: Completed 03-01-PLAN.md
 Resume file: None
