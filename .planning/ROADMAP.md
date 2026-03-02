@@ -81,7 +81,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 04-01: TBD
+- [x] 04-01-PLAN.md -- Next.js scaffold, dark theme, Zustand stores, SSE hook, typed API client
 - [ ] 04-02: TBD
 - [ ] 04-03: TBD
 
@@ -127,6 +127,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Database Foundation | 0/2 | Complete    | 2026-03-02 |
 | 2. Portfolio & Watchlist APIs | 1/2 | In Progress | - |
 | 3. LLM Chat Integration | 0/2 | Not started | - |
-| 4. Frontend Foundation | 0/3 | Not started | - |
+| 4. Frontend Foundation | 1/3 | In Progress | - |
 | 5. Visualizations & Chat Panel | 0/3 | Not started | - |
 | 6. Docker & E2E Tests | 0/2 | Not started | - |

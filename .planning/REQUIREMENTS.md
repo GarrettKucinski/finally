@@ -50,13 +50,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Frontend Core
 
-- [ ] **UI-01**: Next.js app with dark terminal aesthetic (backgrounds ~`#0d1117`, muted borders, data-dense layout)
-- [ ] **UI-02**: Tailwind CSS with custom dark theme using accent colors: yellow `#ecad0a`, blue `#209dd7`, purple `#753991`
-- [ ] **UI-03**: SSE client connects to `/api/stream/prices` via native EventSource with auto-reconnect
-- [ ] **UI-04**: Connection status indicator in header: green dot (connected), yellow (reconnecting), red (disconnected)
+- [x] **UI-01**: Next.js app with dark terminal aesthetic (backgrounds ~`#0d1117`, muted borders, data-dense layout)
+- [x] **UI-02**: Tailwind CSS with custom dark theme using accent colors: yellow `#ecad0a`, blue `#209dd7`, purple `#753991`
+- [x] **UI-03**: SSE client connects to `/api/stream/prices` via native EventSource with auto-reconnect
+- [x] **UI-04**: Connection status indicator in header: green dot (connected), yellow (reconnecting), red (disconnected)
 - [ ] **UI-05**: Price flash animations: brief green (uptick) or red (downtick) background highlight fading over ~500ms via CSS transitions
-- [ ] **UI-06**: Consistent error display (toast or inline) for API errors without crashing the UI
-- [ ] **UI-07**: All API calls use relative paths (`/api/*`) proxied to backend via Next.js rewrites
+- [x] **UI-06**: Consistent error display (toast or inline) for API errors without crashing the UI
+- [x] **UI-07**: All API calls use relative paths (`/api/*`) proxied to backend via Next.js rewrites
 
 ### Visualization
 
@@ -160,13 +160,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CHAT-07 | Phase 3: LLM Chat Integration | Complete |
 | CHAT-08 | Phase 3: LLM Chat Integration | Complete |
 | CHAT-09 | Phase 3: LLM Chat Integration | Complete |
-| UI-01 | Phase 4: Frontend Foundation | Pending |
-| UI-02 | Phase 4: Frontend Foundation | Pending |
-| UI-03 | Phase 4: Frontend Foundation | Pending |
-| UI-04 | Phase 4: Frontend Foundation | Pending |
+| UI-01 | Phase 4: Frontend Foundation | Complete |
+| UI-02 | Phase 4: Frontend Foundation | Complete |
+| UI-03 | Phase 4: Frontend Foundation | Complete |
+| UI-04 | Phase 4: Frontend Foundation | Complete |
 | UI-05 | Phase 4: Frontend Foundation | Pending |
-| UI-06 | Phase 4: Frontend Foundation | Pending |
-| UI-07 | Phase 4: Frontend Foundation | Pending |
+| UI-06 | Phase 4: Frontend Foundation | Complete |
+| UI-07 | Phase 4: Frontend Foundation | Complete |
 | VIZ-01 | Phase 4: Frontend Foundation | Pending |
 | VIZ-06 | Phase 4: Frontend Foundation | Pending |
 | VIZ-07 | Phase 4: Frontend Foundation | Pending |
