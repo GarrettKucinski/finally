@@ -20,8 +20,8 @@ from app.config import Settings
 from app.market.cache import PriceCache
 from app.market.interface import MarketDataSource
 from app.models.chat import LLMResponse
-from app.services.portfolio import get_portfolio
-from app.services.watchlist import get_watchlist
+from app.services.portfolio import execute_trade, get_portfolio, record_snapshot
+from app.services.watchlist import add_ticker, get_watchlist, remove_ticker
 
 logger = logging.getLogger(__name__)
 
@@ -220,14 +220,42 @@ async def _execute_actions(
 ) -> dict:
     """Execute trades and watchlist changes from the LLM response.
 
-    Stub implementation for Plan 03-01. Returns empty results.
-    Full implementation with error collection in Plan 03-02 (CHAT-05, CHAT-06, CHAT-07).
+    Each action is wrapped in try/except. Successes and failures are
+    tracked separately so the response includes full execution results.
+    A portfolio snapshot is recorded after each successful trade (PORT-09).
     """
     results: dict = {"trades": [], "watchlist_changes": [], "errors": []}
 
-    # Plan 03-02 will implement actual execution here.
-    # For now, if there are trades or watchlist_changes in the mock response,
-    # they are returned but not executed. In mock mode, these lists are empty.
+    for trade in llm_response.trades:
+        try:
+            trade_result = await execute_trade(
+                pool, price_cache, trade.ticker, trade.side, trade.quantity
+            )
+            await record_snapshot(pool, price_cache)
+            results["trades"].append(trade_result)
+        except ValueError as e:
+            results["errors"].append({
+                "type": "trade",
+                "detail": str(e),
+                "ticker": trade.ticker,
+                "side": trade.side,
+                "quantity": trade.quantity,
+            })
+
+    for change in llm_response.watchlist_changes:
+        try:
+            if change.action == "add":
+                await add_ticker(pool, market_source, change.ticker)
+            elif change.action == "remove":
+                await remove_ticker(pool, market_source, change.ticker)
+            results["watchlist_changes"].append(change.model_dump())
+        except ValueError as e:
+            results["errors"].append({
+                "type": "watchlist",
+                "detail": str(e),
+                "ticker": change.ticker,
+                "action": change.action,
+            })
 
     return results
 
