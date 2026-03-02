@@ -78,11 +78,12 @@ Plans:
   3. Connection status indicator in the header shows green (connected), yellow (reconnecting), or red (disconnected) reflecting the actual SSE connection state
   4. User can buy and sell shares using the trade bar, see their positions update in the positions table (ticker, qty, avg cost, current price, P&L), and see cash/total value update in the header
   5. API errors display as toast or inline messages without crashing the UI, and all API calls use relative `/api/*` paths proxied through Next.js rewrites
-**Plans**: 2 plans
+**Plans**: 3 plans
 
 Plans:
 - [x] 04-01-PLAN.md -- Next.js scaffold, dark theme, Zustand stores, SSE hook, typed API client
 - [x] 04-02-PLAN.md -- UI components: Header, WatchlistPanel, PositionsTable, TradeBar, Dashboard layout
+- [ ] 04-03-PLAN.md -- Gap closure: SSE through Next.js rewrites (UI-07), sparkline mini-charts (VIZ-01)
 
 ### Phase 5: Visualizations & Chat Panel
 **Goal**: Users experience the differentiating features -- sparkline mini-charts, a detailed ticker chart, portfolio heatmap, P&L history chart, and an AI chat sidebar with inline action cards
