@@ -136,10 +136,10 @@ class TestSeedIfEmpty:
     """Tests for _seed_if_empty conditional seeding logic."""
 
     @pytest.mark.asyncio
-    async def test_seed_if_empty_seeds_when_count_zero(self):
-        """_seed_if_empty executes seed SQL when users table has 0 rows."""
+    async def test_seed_if_empty_seeds_when_default_user_missing(self):
+        """_seed_if_empty executes seed SQL when default user doesn't exist."""
         mock_conn = AsyncMock()
-        mock_conn.fetchval = AsyncMock(return_value=0)
+        mock_conn.fetchval = AsyncMock(return_value=None)
         mock_conn.execute = AsyncMock()
 
         from app.db import _seed_if_empty
@@ -149,8 +149,8 @@ class TestSeedIfEmpty:
         assert mock_conn.execute.called
 
     @pytest.mark.asyncio
-    async def test_seed_if_empty_skips_when_data_exists(self):
-        """_seed_if_empty does NOT execute seed SQL when users table has rows."""
+    async def test_seed_if_empty_skips_when_default_user_exists(self):
+        """_seed_if_empty does NOT execute seed SQL when default user exists."""
         mock_conn = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value=1)
         mock_conn.execute = AsyncMock()
@@ -158,7 +158,7 @@ class TestSeedIfEmpty:
         from app.db import _seed_if_empty
 
         await _seed_if_empty(mock_conn)
-        # fetchval was called to check count, but execute should NOT be called for seed
+        # fetchval was called to check for default user, but execute should NOT be called
         mock_conn.fetchval.assert_called_once()
         mock_conn.execute.assert_not_called()
 

@@ -53,18 +53,22 @@ async def init_db(database_url: str) -> asyncpg.Pool:
 
 
 async def _seed_if_empty(conn: asyncpg.Connection) -> None:
-    """Insert default seed data if the users table is empty.
+    """Insert default seed data if the default user doesn't exist.
 
-    Checks SELECT COUNT(*) FROM users. If 0, executes seed.sql.
-    On subsequent startups (user already exists), this is a no-op.
+    Checks for the specific default user UUID. If missing, executes seed.sql.
+    This handles the case where the DB has stale data from previous runs
+    but the default user was removed or never created.
     """
-    count = await conn.fetchval("SELECT COUNT(*) FROM users")
-    if count == 0:
-        logger.info("No users found — seeding default data...")
+    default_user_id = "00000000-0000-0000-0000-000000000001"
+    exists = await conn.fetchval(
+        "SELECT 1 FROM users WHERE id = $1", default_user_id
+    )
+    if not exists:
+        logger.info("Default user not found — seeding default data...")
         await conn.execute(_SEED_SQL)
         logger.info("Seed data inserted.")
     else:
-        logger.info("Users already exist — skipping seed.")
+        logger.info("Default user exists — skipping seed.")
 
 
 async def close_db(pool: asyncpg.Pool) -> None:
