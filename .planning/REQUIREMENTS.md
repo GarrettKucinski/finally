@@ -41,10 +41,10 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **CHAT-01**: `POST /api/chat` accepts a user message and returns a complete JSON response (message + optional trades + optional watchlist_changes)
 - [x] **CHAT-02**: Chat endpoint builds portfolio context (cash, positions with P&L, watchlist with live prices, total value) and includes it in the LLM prompt
 - [x] **CHAT-03**: Chat endpoint loads the last 20 messages from chat_messages table as conversation history
-- [ ] **CHAT-04**: LLM is called via LiteLLM -> OpenRouter with Cerebras inference, requesting structured JSON output
-- [ ] **CHAT-05**: Trades in LLM response are auto-executed through the same `execute_trade` path as manual trades
-- [ ] **CHAT-06**: Watchlist changes in LLM response are auto-executed through the watchlist service
-- [ ] **CHAT-07**: Failed trade/watchlist actions include error details in the response so the LLM can inform the user
+- [x] **CHAT-04**: LLM is called via LiteLLM -> OpenRouter with Cerebras inference, requesting structured JSON output
+- [x] **CHAT-05**: Trades in LLM response are auto-executed through the same `execute_trade` path as manual trades
+- [x] **CHAT-06**: Watchlist changes in LLM response are auto-executed through the watchlist service
+- [x] **CHAT-07**: Failed trade/watchlist actions include error details in the response so the LLM can inform the user
 - [x] **CHAT-08**: Chat messages and executed actions are persisted to the chat_messages table (role, content, actions JSONB)
 - [x] **CHAT-09**: When `LLM_MOCK=true`, backend returns deterministic mock responses without calling OpenRouter
 
@@ -154,10 +154,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CHAT-01 | Phase 3: LLM Chat Integration | Complete |
 | CHAT-02 | Phase 3: LLM Chat Integration | Complete |
 | CHAT-03 | Phase 3: LLM Chat Integration | Complete |
-| CHAT-04 | Phase 3: LLM Chat Integration | Pending |
-| CHAT-05 | Phase 3: LLM Chat Integration | Pending |
-| CHAT-06 | Phase 3: LLM Chat Integration | Pending |
-| CHAT-07 | Phase 3: LLM Chat Integration | Pending |
+| CHAT-04 | Phase 3: LLM Chat Integration | Complete |
+| CHAT-05 | Phase 3: LLM Chat Integration | Complete |
+| CHAT-06 | Phase 3: LLM Chat Integration | Complete |
+| CHAT-07 | Phase 3: LLM Chat Integration | Complete |
 | CHAT-08 | Phase 3: LLM Chat Integration | Complete |
 | CHAT-09 | Phase 3: LLM Chat Integration | Complete |
 | UI-01 | Phase 4: Frontend Foundation | Pending |
