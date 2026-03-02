@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-03-02T08:41:37Z"
+last_updated: "2026-03-02T08:49:03Z"
 progress:
   total_phases: 2
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -18,33 +18,33 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Users can watch live-streaming prices, trade a simulated portfolio, and chat with an AI assistant that can both analyze and execute trades -- all in a single, polished dark-themed terminal UI.
-**Current focus:** Phase 2: Portfolio & Watchlist APIs (Plan 01 complete, Plan 02 next)
+**Current focus:** Phase 2 complete. Ready for Phase 3: LLM Chat Integration
 
 ## Current Position
 
-Phase: 2 of 6 (Portfolio & Watchlist APIs)
-Plan: 1 of 2 in current phase
-Status: Executing Phase 2
-Last activity: 2026-03-02 -- Completed 02-01 (Portfolio APIs with trade execution, P&L enrichment, and history)
+Phase: 2 of 6 (Portfolio & Watchlist APIs) -- COMPLETE
+Plan: 2 of 2 in current phase -- COMPLETE
+Status: Phase 2 Complete
+Last activity: 2026-03-02 -- Completed 02-02 (Watchlist CRUD with market data sync, background snapshot tasks)
 
-Progress: [###.......] 25%
+Progress: [####......] 33%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 3.3min
-- Total execution time: 0.15 hours
+- Total plans completed: 4
+- Average duration: 3.0min
+- Total execution time: 0.2 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-database-foundation | 2 | 5min | 2.5min |
-| 02-portfolio-watchlist-apis | 1 | 4min | 4min |
+| 02-portfolio-watchlist-apis | 2 | 7min | 3.5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4min), 01-02 (1min), 02-01 (4min)
+- Last 5 plans: 01-01 (4min), 01-02 (1min), 02-01 (4min), 02-02 (3min)
 - Trend: Steady
 
 *Updated after each plan completion*
@@ -69,6 +69,9 @@ Recent decisions affecting current work:
 - 02-01: Epsilon comparison (abs < 1e-9) for zero-quantity position deletion to avoid float precision issues
 - 02-01: record_snapshot called after trade transaction commits (not inside), ensuring snapshot reads committed state
 - 02-01: Cash amounts rounded to 2 decimal places in service layer to prevent float drift
+- 02-02: ON CONFLICT DO NOTHING + RETURNING id pattern for duplicate detection (cleaner than catching UniqueViolationError)
+- 02-02: Background tasks cancelled before DB pool close to prevent shutdown errors
+- 02-02: Market source sync (add_ticker/remove_ticker) always called after DB mutation succeeds
 
 ### Pending Todos
 
@@ -82,5 +85,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 02-01-PLAN.md
+Stopped at: Completed 02-02-PLAN.md (Phase 2 complete)
 Resume file: None

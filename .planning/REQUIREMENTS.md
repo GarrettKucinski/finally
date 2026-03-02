@@ -23,18 +23,18 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **PORT-05**: Trade execution updates positions (upsert) and cash balance atomically within a DB transaction
 - [x] **PORT-06**: Position row is deleted when quantity reaches 0 after a sell
 - [x] **PORT-07**: Trade history is appended to the trades table on every execution (ticker, side, quantity, price, timestamp)
-- [ ] **PORT-08**: Background task records portfolio value snapshot every 30 seconds
+- [x] **PORT-08**: Background task records portfolio value snapshot every 30 seconds
 - [x] **PORT-09**: Portfolio snapshot is recorded immediately after each trade execution
-- [ ] **PORT-10**: Background task deletes portfolio snapshots older than 24 hours
+- [x] **PORT-10**: Background task deletes portfolio snapshots older than 24 hours
 - [x] **PORT-11**: `GET /api/portfolio/history` returns portfolio value snapshots over time
 
 ### Watchlist
 
-- [ ] **WATCH-01**: `GET /api/watchlist` returns current watchlist tickers with latest prices from the price cache
-- [ ] **WATCH-02**: `POST /api/watchlist` adds a ticker to the watchlist (validated: 1-5 uppercase alpha characters)
-- [ ] **WATCH-03**: `DELETE /api/watchlist/{ticker}` removes a ticker from the watchlist
-- [ ] **WATCH-04**: Adding a watchlist ticker also registers it with the live market data source (keeps SSE stream in sync)
-- [ ] **WATCH-05**: Removing a watchlist ticker also unregisters it from the live market data source
+- [x] **WATCH-01**: `GET /api/watchlist` returns current watchlist tickers with latest prices from the price cache
+- [x] **WATCH-02**: `POST /api/watchlist` adds a ticker to the watchlist (validated: 1-5 uppercase alpha characters)
+- [x] **WATCH-03**: `DELETE /api/watchlist/{ticker}` removes a ticker from the watchlist
+- [x] **WATCH-04**: Adding a watchlist ticker also registers it with the live market data source (keeps SSE stream in sync)
+- [x] **WATCH-05**: Removing a watchlist ticker also unregisters it from the live market data source
 
 ### Chat
 
@@ -142,15 +142,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PORT-05 | Phase 2: Portfolio & Watchlist APIs | Complete |
 | PORT-06 | Phase 2: Portfolio & Watchlist APIs | Complete |
 | PORT-07 | Phase 2: Portfolio & Watchlist APIs | Complete |
-| PORT-08 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-08 | Phase 2: Portfolio & Watchlist APIs | Complete |
 | PORT-09 | Phase 2: Portfolio & Watchlist APIs | Complete |
-| PORT-10 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-10 | Phase 2: Portfolio & Watchlist APIs | Complete |
 | PORT-11 | Phase 2: Portfolio & Watchlist APIs | Complete |
-| WATCH-01 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| WATCH-02 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| WATCH-03 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| WATCH-04 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| WATCH-05 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| WATCH-01 | Phase 2: Portfolio & Watchlist APIs | Complete |
+| WATCH-02 | Phase 2: Portfolio & Watchlist APIs | Complete |
+| WATCH-03 | Phase 2: Portfolio & Watchlist APIs | Complete |
+| WATCH-04 | Phase 2: Portfolio & Watchlist APIs | Complete |
+| WATCH-05 | Phase 2: Portfolio & Watchlist APIs | Complete |
 | CHAT-01 | Phase 3: LLM Chat Integration | Pending |
 | CHAT-02 | Phase 3: LLM Chat Integration | Pending |
 | CHAT-03 | Phase 3: LLM Chat Integration | Pending |
