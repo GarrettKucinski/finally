@@ -95,12 +95,12 @@ Plans:
   3. Portfolio heatmap (treemap) displays positions sized by portfolio weight and colored by P&L (green for profit, red for loss)
   4. P&L chart shows total portfolio value over time as a line chart using portfolio snapshot data
   5. AI chat panel (collapsible sidebar) allows sending messages, shows scrolling conversation history with loading state, and renders AI-executed trades and watchlist changes as structured visual cards inline
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
-- [ ] 05-03: TBD
+- [x] 05-01-PLAN.md -- Install charting libraries, create TickerChart (Lightweight Charts), PortfolioHeatmap (Recharts Treemap), PnLChart (Recharts AreaChart)
+- [ ] 05-02-PLAN.md -- Chat types, API function, chatStore, ChatPanel, ChatMessage, ChatActionCard components
+- [ ] 05-03-PLAN.md -- Dashboard integration: priceStore timestamps, WatchlistPanel selection, full layout wiring
 
 ### Phase 6: Docker & E2E Tests
 **Goal**: The entire application runs from a single `docker compose up` command and is validated by automated end-to-end tests
@@ -128,5 +128,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Portfolio & Watchlist APIs | 1/2 | In Progress | - |
 | 3. LLM Chat Integration | 0/2 | Not started | - |
 | 4. Frontend Foundation | 3/3 | Complete | 2026-03-02 |
-| 5. Visualizations & Chat Panel | 0/3 | Not started | - |
+| 5. Visualizations & Chat Panel | 2/3 | In Progress | - |
 | 6. Docker & E2E Tests | 0/2 | Not started | - |

@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-02T18:54:59.074Z"
+last_updated: "2026-03-02T19:59:15.379Z"
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 4
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 12
+  completed_plans: 11
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Users can watch live-streaming prices, trade a simulated portfolio, and chat with an AI assistant that can both analyze and execute trades -- all in a single, polished dark-themed terminal UI.
-**Current focus:** Phase 4 complete. Full trading terminal UI with live prices, flash animations, trade execution, positions monitoring, SSE through Next.js proxy, and sparkline mini-charts. Next: Phase 5 (visualizations and chat panel).
+**Current focus:** Phase 5 in progress. Chart visualizations and chat panel components complete (05-01, 05-02). Next: Dashboard integration (05-03).
 
 ## Current Position
 
-Phase: 4 of 6 (Frontend Foundation) -- COMPLETE
-Plan: 3 of 3 in current phase -- COMPLETE
-Status: Phase 04 Complete, ready for Phase 05
-Last activity: 2026-03-02 -- Completed 04-03 (Gap closure: SSE through Next.js Route Handler proxy, sparkline mini-charts)
+Phase: 5 of 6 (Visualizations & Chat Panel)
+Plan: 2 of 3 in current phase -- COMPLETE
+Status: Phase 05 in progress, 05-01 and 05-02 complete
+Last activity: 2026-03-02 -- Completed 05-02 (Chat panel: chatStore, ChatPanel, ChatMessage, ChatActionCard)
 
-Progress: [########..] 67%
+Progress: [#########.] 92%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: 3.6min
-- Total execution time: 0.53 hours
+- Total plans completed: 11
+- Average duration: 3.5min
+- Total execution time: 0.62 hours
 
 **By Phase:**
 
@@ -44,10 +44,11 @@ Progress: [########..] 67%
 | 02-portfolio-watchlist-apis | 2 | 7min | 3.5min |
 | 03-llm-chat-integration | 2 | 6min | 3.0min |
 | 04-frontend-foundation | 3 | 20min | 6.7min |
+| 05-visualizations-chat-panel | 1 | 3min | 3.0min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (3min), 03-02 (3min), 04-01 (3min), 04-02 (5min), 04-03 (12min)
-- Trend: Steady (04-03 longer due to gap closure with 2 deviation fixes)
+- Last 5 plans: 03-02 (3min), 04-01 (3min), 04-02 (5min), 04-03 (12min), 05-01 (3min)
+- Trend: Steady (05-01 fast -- chart component creation without complex integration)
 
 *Updated after each plan completion*
 
@@ -90,6 +91,9 @@ Recent decisions affecting current work:
 - 04-03: SSE proxy via Route Handler instead of rewrites (Next.js rewrites buffer SSE; Route Handlers take priority)
 - 04-03: Module-level EMPTY_HISTORY constant with ?? operator to avoid Zustand selector infinite re-render loops
 - 04-03: Inline SVG sparklines with trend coloring (green/red) rather than external charting library
+- 05-01: Lightweight Charts v5 API (addSeries(LineSeries)) used instead of deprecated v4 addLineSeries
+- 05-01: Treemap index signature added to HeatmapPosition for Recharts v3 type compatibility
+- 05-01: Recharts Tooltip formatters use untyped params with Number/String coercion for v3 type safety
 
 ### Pending Todos
 
@@ -98,10 +102,10 @@ None yet.
 ### Blockers/Concerns
 
 - RESOLVED: LiteLLM `extra_body` structured output -- works correctly with response_format=LLMResponse (validated in Phase 3)
-- Research flag: @nivo/treemap React 19 compatibility needs verification in Phase 5
+- RESOLVED: @nivo/treemap React 19 compatibility concern -- used Recharts Treemap instead (validated in 05-01)
 
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 04-03-PLAN.md (Phase 04 fully complete with gap closure)
+Stopped at: Completed 05-01-PLAN.md (Chart components: TickerChart, PortfolioHeatmap, PnLChart)
 Resume file: None

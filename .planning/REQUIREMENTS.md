@@ -61,10 +61,10 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Visualization
 
 - [x] **VIZ-01**: Watchlist panel shows tickers with live-updating current price, change %, and sparkline mini-chart
-- [ ] **VIZ-02**: Sparkline mini-charts accumulate price history from SSE since page load and render progressively
-- [ ] **VIZ-03**: Clicking a ticker in the watchlist shows a detailed chart in the main chart area using Lightweight Charts
-- [ ] **VIZ-04**: Portfolio heatmap (treemap) with rectangles sized by portfolio weight and colored by P&L (green=profit, red=loss)
-- [ ] **VIZ-05**: P&L chart showing total portfolio value over time as a line chart from portfolio_snapshots data
+- [x] **VIZ-02**: Sparkline mini-charts accumulate price history from SSE since page load and render progressively
+- [x] **VIZ-03**: Clicking a ticker in the watchlist shows a detailed chart in the main chart area using Lightweight Charts
+- [x] **VIZ-04**: Portfolio heatmap (treemap) with rectangles sized by portfolio weight and colored by P&L (green=profit, red=loss)
+- [x] **VIZ-05**: P&L chart showing total portfolio value over time as a line chart from portfolio_snapshots data
 - [x] **VIZ-06**: Positions table showing ticker, quantity, avg cost, current price, unrealized P&L, and % change
 - [x] **VIZ-07**: Trade bar with ticker input, quantity input, buy button, and sell button for market orders
 - [x] **VIZ-08**: Header displaying portfolio total value (updating live), connection status dot, and cash balance
@@ -171,10 +171,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | VIZ-06 | Phase 4: Frontend Foundation | Complete |
 | VIZ-07 | Phase 4: Frontend Foundation | Complete |
 | VIZ-08 | Phase 4: Frontend Foundation | Complete |
-| VIZ-02 | Phase 5: Visualizations & Chat Panel | Pending |
-| VIZ-03 | Phase 5: Visualizations & Chat Panel | Pending |
-| VIZ-04 | Phase 5: Visualizations & Chat Panel | Pending |
-| VIZ-05 | Phase 5: Visualizations & Chat Panel | Pending |
+| VIZ-02 | Phase 5: Visualizations & Chat Panel | Complete |
+| VIZ-03 | Phase 5: Visualizations & Chat Panel | Complete |
+| VIZ-04 | Phase 5: Visualizations & Chat Panel | Complete |
+| VIZ-05 | Phase 5: Visualizations & Chat Panel | Complete |
 | VIZ-09 | Phase 5: Visualizations & Chat Panel | Pending |
 | VIZ-10 | Phase 5: Visualizations & Chat Panel | Pending |
 | OPS-01 | Phase 6: Docker & E2E Tests | Pending |
