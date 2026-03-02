@@ -1,48 +1,138 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSSE } from "@/hooks/useSSE";
 import { usePortfolioStore } from "@/stores/portfolioStore";
+import { usePriceStore } from "@/stores/priceStore";
+import type { ChartDataPoint } from "@/stores/priceStore";
+import { fetchPortfolioHistory } from "@/lib/api";
+import type { SnapshotPoint } from "@/types/api";
 import { Header } from "@/components/layout/Header";
 import { WatchlistPanel } from "@/components/watchlist/WatchlistPanel";
 import { PositionsTable } from "@/components/portfolio/PositionsTable";
 import { TradeBar } from "@/components/portfolio/TradeBar";
+import TickerChart from "@/components/chart/TickerChart";
+import PortfolioHeatmap from "@/components/portfolio/PortfolioHeatmap";
+import type { HeatmapPosition } from "@/components/portfolio/PortfolioHeatmap";
+import PnLChart from "@/components/portfolio/PnLChart";
+import { ChatPanel } from "@/components/chat/ChatPanel";
+
+const EMPTY_CHART: ChartDataPoint[] = [];
 
 export function Dashboard() {
   useSSE();
 
   const refresh = usePortfolioStore((s) => s.refresh);
+  const positions = usePortfolioStore((s) => s.positions);
+  const positionsLength = usePortfolioStore((s) => s.positions.length);
+  const prices = usePriceStore((s) => s.prices);
+  const chartHistory = usePriceStore((s) => s.chartHistory);
 
+  const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
+  const [chatOpen, setChatOpen] = useState(true);
+  const [pnlData, setPnlData] = useState<SnapshotPoint[]>([]);
+
+  // Load portfolio on mount
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  // Fetch portfolio history on mount and when positions change (trade happened)
+  useEffect(() => {
+    fetchPortfolioHistory()
+      .then(setPnlData)
+      .catch(() => {});
+  }, [positionsLength]);
+
+  // Chart data for selected ticker
+  const chartData = useMemo(() => {
+    if (!selectedTicker) return EMPTY_CHART;
+    return chartHistory[selectedTicker] ?? EMPTY_CHART;
+  }, [selectedTicker, chartHistory]);
+
+  // Transform positions to heatmap format
+  const heatmapData: HeatmapPosition[] = useMemo(() => {
+    return positions
+      .filter((p) => p.quantity > 0)
+      .map((p) => {
+        const currentPrice =
+          prices[p.ticker]?.price ?? p.current_price ?? p.avg_cost;
+        return {
+          name: p.ticker,
+          size: Math.abs(currentPrice * p.quantity),
+          pnlPercent:
+            p.avg_cost !== 0
+              ? ((currentPrice - p.avg_cost) / p.avg_cost) * 100
+              : 0,
+        };
+      });
+  }, [positions, prices]);
 
   return (
     <div className="flex h-screen flex-col">
       <Header />
 
       <div className="flex flex-1 overflow-hidden">
+        {/* Left: Watchlist */}
         <aside className="w-80 flex-shrink-0 overflow-y-auto border-r border-border-default">
-          <WatchlistPanel />
+          <WatchlistPanel
+            selectedTicker={selectedTicker ?? undefined}
+            onSelectTicker={setSelectedTicker}
+          />
         </aside>
 
+        {/* Center: Main content */}
         <main className="flex-1 space-y-4 overflow-y-auto p-4">
+          {/* Ticker Chart */}
+          {selectedTicker ? (
+            <TickerChart ticker={selectedTicker} data={chartData} />
+          ) : (
+            <div className="flex h-64 items-center justify-center rounded-lg border border-border-default bg-surface-secondary p-4">
+              <span className="text-text-muted">
+                Select a ticker from the watchlist to view its chart
+              </span>
+            </div>
+          )}
+
+          {/* Portfolio visualizations: Heatmap + P&L Chart side by side */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="rounded-lg border border-border-default bg-surface-secondary p-4">
+              <h3 className="mb-2 text-sm font-bold uppercase tracking-wider text-text-secondary">
+                Portfolio Heatmap
+              </h3>
+              <PortfolioHeatmap positions={heatmapData} />
+            </div>
+            <div className="rounded-lg border border-border-default bg-surface-secondary p-4">
+              <h3 className="mb-2 text-sm font-bold uppercase tracking-wider text-text-secondary">
+                Portfolio Value
+              </h3>
+              <PnLChart data={pnlData} />
+            </div>
+          </div>
+
+          {/* Positions + Trade Bar */}
           <PositionsTable />
           <TradeBar />
-
-          <div className="flex h-64 items-center justify-center rounded-lg border border-border-default bg-surface-secondary p-4">
-            <span className="text-text-muted">
-              Chart area -- coming in Phase 5
-            </span>
-          </div>
-
-          <div className="flex h-48 items-center justify-center rounded-lg border border-dashed border-border-default bg-surface-secondary/50 p-4">
-            <span className="text-text-muted">
-              AI Chat -- coming in Phase 5
-            </span>
-          </div>
         </main>
+
+        {/* Right: Chat sidebar */}
+        <aside
+          className={`${chatOpen ? "w-96" : "w-0"} flex-shrink-0 overflow-hidden border-l border-border-default transition-all duration-300`}
+        >
+          <ChatPanel open={chatOpen} onToggle={() => setChatOpen(!chatOpen)} />
+        </aside>
       </div>
+
+      {/* Floating chat toggle when sidebar is collapsed */}
+      {!chatOpen && (
+        <button
+          onClick={() => setChatOpen(true)}
+          className="fixed bottom-4 right-4 z-10 rounded-full bg-accent-purple p-3 text-text-primary shadow-lg hover:bg-accent-purple/80"
+          title="Open AI Chat"
+        >
+          AI
+        </button>
+      )}
     </div>
   );
 }

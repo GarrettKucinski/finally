@@ -12,15 +12,24 @@ const EMPTY_HISTORY: number[] = [];
 function WatchlistRow({
   ticker,
   onRemove,
+  selected,
+  onSelect,
 }: {
   ticker: string;
   onRemove: (ticker: string) => void;
+  selected?: boolean;
+  onSelect?: (ticker: string) => void;
 }) {
   const priceData = usePriceStore((s) => s.prices[ticker]);
   const history = usePriceStore((s) => s.priceHistory[ticker] ?? EMPTY_HISTORY);
 
   return (
-    <div className="group flex items-center gap-2 border-b border-border-default px-3 py-2 hover:bg-surface-tertiary">
+    <div
+      onClick={() => onSelect?.(ticker)}
+      className={`group flex cursor-pointer items-center gap-2 border-b border-border-default px-3 py-2 ${
+        selected ? "bg-surface-tertiary" : "hover:bg-surface-tertiary"
+      }`}
+    >
       <span className="w-14 flex-shrink-0 font-medium text-text-primary">
         {ticker}
       </span>
@@ -66,7 +75,15 @@ function WatchlistRow({
   );
 }
 
-export function WatchlistPanel() {
+interface WatchlistPanelProps {
+  selectedTicker?: string;
+  onSelectTicker?: (ticker: string) => void;
+}
+
+export function WatchlistPanel({
+  selectedTicker,
+  onSelectTicker,
+}: WatchlistPanelProps) {
   const [tickers, setTickers] = useState<string[]>([]);
   const [newTicker, setNewTicker] = useState("");
   const [loading, setLoading] = useState(false);
@@ -118,7 +135,13 @@ export function WatchlistPanel() {
 
       <div className="flex-1 overflow-y-auto">
         {tickers.map((ticker) => (
-          <WatchlistRow key={ticker} ticker={ticker} onRemove={handleRemove} />
+          <WatchlistRow
+            key={ticker}
+            ticker={ticker}
+            onRemove={handleRemove}
+            selected={ticker === selectedTicker}
+            onSelect={onSelectTicker}
+          />
         ))}
         {tickers.length === 0 && (
           <div className="px-3 py-4 text-center text-sm text-text-muted">
