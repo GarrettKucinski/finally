@@ -1,0 +1,12 @@
+{
+  "name": "finally-e2e-tests",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium",
+    "test:smoke": "playwright test tests/smoke.spec.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.52.0"
+  }
+}
