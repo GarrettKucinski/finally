@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: Portfolio & Watchlist APIs** - Trade execution, portfolio queries, watchlist CRUD, snapshot background tasks
 - [ ] **Phase 3: LLM Chat Integration** - AI assistant with structured outputs, auto-execution pipeline, mock mode
 - [x] **Phase 4: Frontend Foundation** - Next.js dark terminal UI, SSE client, watchlist with live prices, trade bar, positions table (completed 2026-03-02)
-- [ ] **Phase 5: Visualizations & Chat Panel** - Sparklines, detail chart, portfolio heatmap, P&L chart, AI chat sidebar
+- [x] **Phase 5: Visualizations & Chat Panel** - Sparklines, detail chart, portfolio heatmap, P&L chart, AI chat sidebar (completed 2026-03-02)
 - [ ] **Phase 6: Docker & E2E Tests** - Dockerfiles, docker-compose orchestration, Playwright E2E test suite
 
 ## Phase Details
@@ -99,8 +99,8 @@ Plans:
 
 Plans:
 - [x] 05-01-PLAN.md -- Install charting libraries, create TickerChart (Lightweight Charts), PortfolioHeatmap (Recharts Treemap), PnLChart (Recharts AreaChart)
-- [ ] 05-02-PLAN.md -- Chat types, API function, chatStore, ChatPanel, ChatMessage, ChatActionCard components
-- [ ] 05-03-PLAN.md -- Dashboard integration: priceStore timestamps, WatchlistPanel selection, full layout wiring
+- [x] 05-02-PLAN.md -- Chat types, API function, chatStore, ChatPanel, ChatMessage, ChatActionCard components
+- [x] 05-03-PLAN.md -- Dashboard integration: priceStore timestamps, WatchlistPanel selection, full layout wiring
 
 ### Phase 6: Docker & E2E Tests
 **Goal**: The entire application runs from a single `docker compose up` command and is validated by automated end-to-end tests
@@ -128,5 +128,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Portfolio & Watchlist APIs | 1/2 | In Progress | - |
 | 3. LLM Chat Integration | 0/2 | Not started | - |
 | 4. Frontend Foundation | 3/3 | Complete | 2026-03-02 |
-| 5. Visualizations & Chat Panel | 2/3 | In Progress | - |
+| 5. Visualizations & Chat Panel | 3/3 | Complete | 2026-03-02 |
 | 6. Docker & E2E Tests | 0/2 | Not started | - |

@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-02T19:59:15.379Z"
+status: in-progress
+last_updated: "2026-03-02T20:29:37Z"
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 12
-  completed_plans: 11
+  completed_plans: 12
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Users can watch live-streaming prices, trade a simulated portfolio, and chat with an AI assistant that can both analyze and execute trades -- all in a single, polished dark-themed terminal UI.
-**Current focus:** Phase 5 in progress. Chart visualizations and chat panel components complete (05-01, 05-02). Next: Dashboard integration (05-03).
+**Current focus:** Phase 5 complete. All visualizations and chat panel integrated into Dashboard. Ready for Phase 6 (Docker & E2E Tests).
 
 ## Current Position
 
-Phase: 5 of 6 (Visualizations & Chat Panel)
-Plan: 2 of 3 in current phase -- COMPLETE
-Status: Phase 05 in progress, 05-01 and 05-02 complete
-Last activity: 2026-03-02 -- Completed 05-02 (Chat panel: chatStore, ChatPanel, ChatMessage, ChatActionCard)
+Phase: 5 of 6 (Visualizations & Chat Panel) -- COMPLETE
+Plan: 3 of 3 in current phase -- COMPLETE
+Status: Phase 05 complete, all plans done
+Last activity: 2026-03-02 -- Completed 05-03 (Dashboard integration: priceStore timestamps, WatchlistPanel selection, full layout wiring)
 
-Progress: [#########.] 92%
+Progress: [##########] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
-- Average duration: 3.5min
-- Total execution time: 0.62 hours
+- Total plans completed: 12
+- Average duration: 5.5min
+- Total execution time: 1.07 hours
 
 **By Phase:**
 
@@ -44,11 +44,11 @@ Progress: [#########.] 92%
 | 02-portfolio-watchlist-apis | 2 | 7min | 3.5min |
 | 03-llm-chat-integration | 2 | 6min | 3.0min |
 | 04-frontend-foundation | 3 | 20min | 6.7min |
-| 05-visualizations-chat-panel | 2 | 6min | 3.0min |
+| 05-visualizations-chat-panel | 3 | 33min | 11.0min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (3min), 04-02 (5min), 04-03 (12min), 05-01 (3min), 05-02 (3min)
-- Trend: Steady (05-02 fast -- chat component creation with typed store)
+- Last 5 plans: 04-02 (5min), 04-03 (12min), 05-01 (3min), 05-02 (3min), 05-03 (27min)
+- Trend: 05-03 longer due to checkpoint verification loop (timestamp dedup fix)
 
 *Updated after each plan completion*
 
@@ -96,6 +96,10 @@ Recent decisions affecting current work:
 - 05-01: Recharts Tooltip formatters use untyped params with Number/String coercion for v3 type safety
 - 05-02: Cross-store refresh: chatStore calls portfolioStore.getState().refresh() after AI trades (not a hook, from Zustand action)
 - 05-02: No chat history fetch on mount -- start fresh each session per research anti-pattern guidance
+- 05-03: chartHistory added alongside priceHistory (not replacing it) to preserve Sparkline's number[] contract
+- 05-03: Timestamp dedup in chartHistory -- same-second updates replace last point for Lightweight Charts ascending-time constraint
+- 05-03: Floating chat toggle button at bottom-right rather than modifying Header component
+- 05-03: Portfolio history refetch triggered by positions.length change as trade detection heuristic
 
 ### Pending Todos
 
@@ -109,5 +113,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 05-02-PLAN.md (Chat panel: chatStore, ChatPanel, ChatMessage, ChatActionCard)
+Stopped at: Completed 05-03-PLAN.md (Dashboard integration: all Phase 5 components wired)
 Resume file: None
