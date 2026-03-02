@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { usePriceStore } from "@/stores/priceStore";
 import { fetchWatchlist, addTicker, removeTicker } from "@/lib/api";
 import { PriceFlash } from "@/components/ui/PriceFlash";
+import { Sparkline } from "@/components/watchlist/Sparkline";
 import { formatPercent } from "@/lib/format";
 
 function WatchlistRow({
@@ -14,6 +15,7 @@ function WatchlistRow({
   onRemove: (ticker: string) => void;
 }) {
   const priceData = usePriceStore((s) => s.prices[ticker]);
+  const history = usePriceStore((s) => s.priceHistory[ticker] || []);
 
   return (
     <div className="group flex items-center gap-2 border-b border-border-default px-3 py-2 hover:bg-surface-tertiary">
@@ -47,8 +49,8 @@ function WatchlistRow({
         )}
       </div>
 
-      <div className="w-16 flex-shrink-0 border-l border-dashed border-border-default text-center text-xs text-text-muted">
-        &nbsp;
+      <div className="w-16 flex-shrink-0 flex items-center justify-center">
+        <Sparkline data={history} width={60} height={20} />
       </div>
 
       <button

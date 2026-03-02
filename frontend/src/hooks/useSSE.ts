@@ -5,6 +5,7 @@ import { usePriceStore } from "@/stores/priceStore";
 
 export function useSSE() {
   const updatePrices = usePriceStore((s) => s.updatePrices);
+  const appendPriceHistory = usePriceStore((s) => s.appendPriceHistory);
   const setConnectionStatus = usePriceStore((s) => s.setConnectionStatus);
   const eventSourceRef = useRef<EventSource | null>(null);
 
@@ -20,6 +21,7 @@ export function useSSE() {
       try {
         const data = JSON.parse(event.data);
         updatePrices(data);
+        appendPriceHistory(data);
       } catch {
         // Ignore malformed SSE data
       }
@@ -37,5 +39,5 @@ export function useSSE() {
       es.close();
       setConnectionStatus("disconnected");
     };
-  }, [updatePrices, setConnectionStatus]);
+  }, [updatePrices, appendPriceHistory, setConnectionStatus]);
 }
