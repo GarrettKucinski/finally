@@ -1,27 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async headers() {
-    return [
-      {
-        source: "/api/stream/:path*",
-        headers: [
-          {
-            key: "X-Accel-Buffering",
-            value: "no",
-          },
-          {
-            key: "Cache-Control",
-            value: "no-store",
-          },
-          {
-            key: "Content-Type",
-            value: "text/event-stream",
-          },
-        ],
-      },
-    ];
-  },
   async rewrites() {
     return [
       {
