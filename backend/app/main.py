@@ -21,6 +21,7 @@ from fastapi import FastAPI
 from .config import Settings
 from .db import close_db, init_db
 from .market.cache import PriceCache
+from .routes.chat import router as chat_router
 from .routes.health import router as health_router
 from .routes.portfolio import router as portfolio_router
 from .routes.portfolio_history import router as portfolio_history_router
@@ -108,3 +109,4 @@ app.include_router(health_router)
 app.include_router(portfolio_router)
 app.include_router(portfolio_history_router)
 app.include_router(watchlist_router)
+app.include_router(chat_router)
