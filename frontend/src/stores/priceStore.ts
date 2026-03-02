@@ -42,10 +42,15 @@ export const usePriceStore = create<PriceStore>()((set) => ({
 
         // Chart history (ChartDataPoint[])
         const existingChart = newChartHistory[ticker] || [];
-        const updatedChart = [
-          ...existingChart,
-          { time: Math.floor(update.timestamp), value: update.price },
-        ];
+        const newTime = Math.floor(update.timestamp);
+        const lastPoint = existingChart[existingChart.length - 1];
+        let updatedChart: ChartDataPoint[];
+        if (lastPoint && lastPoint.time === newTime) {
+          // Same second — update in place to avoid duplicate timestamps
+          updatedChart = [...existingChart.slice(0, -1), { time: newTime, value: update.price }];
+        } else {
+          updatedChart = [...existingChart, { time: newTime, value: update.price }];
+        }
         newChartHistory[ticker] =
           updatedChart.length > MAX_HISTORY_POINTS
             ? updatedChart.slice(updatedChart.length - MAX_HISTORY_POINTS)
