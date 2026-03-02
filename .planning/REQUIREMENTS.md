@@ -16,17 +16,17 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Portfolio
 
-- [ ] **PORT-01**: `GET /api/portfolio` returns current positions, cash balance, total portfolio value, and unrealized P&L per position
-- [ ] **PORT-02**: `POST /api/portfolio/trade` executes a market order (buy or sell) at the current cached price with instant fill
-- [ ] **PORT-03**: Buy validation rejects trades when user has insufficient cash
-- [ ] **PORT-04**: Sell validation rejects trades when user has insufficient shares
-- [ ] **PORT-05**: Trade execution updates positions (upsert) and cash balance atomically within a DB transaction
-- [ ] **PORT-06**: Position row is deleted when quantity reaches 0 after a sell
-- [ ] **PORT-07**: Trade history is appended to the trades table on every execution (ticker, side, quantity, price, timestamp)
+- [x] **PORT-01**: `GET /api/portfolio` returns current positions, cash balance, total portfolio value, and unrealized P&L per position
+- [x] **PORT-02**: `POST /api/portfolio/trade` executes a market order (buy or sell) at the current cached price with instant fill
+- [x] **PORT-03**: Buy validation rejects trades when user has insufficient cash
+- [x] **PORT-04**: Sell validation rejects trades when user has insufficient shares
+- [x] **PORT-05**: Trade execution updates positions (upsert) and cash balance atomically within a DB transaction
+- [x] **PORT-06**: Position row is deleted when quantity reaches 0 after a sell
+- [x] **PORT-07**: Trade history is appended to the trades table on every execution (ticker, side, quantity, price, timestamp)
 - [ ] **PORT-08**: Background task records portfolio value snapshot every 30 seconds
-- [ ] **PORT-09**: Portfolio snapshot is recorded immediately after each trade execution
+- [x] **PORT-09**: Portfolio snapshot is recorded immediately after each trade execution
 - [ ] **PORT-10**: Background task deletes portfolio snapshots older than 24 hours
-- [ ] **PORT-11**: `GET /api/portfolio/history` returns portfolio value snapshots over time
+- [x] **PORT-11**: `GET /api/portfolio/history` returns portfolio value snapshots over time
 
 ### Watchlist
 
@@ -135,17 +135,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFRA-02 | Phase 1: Database Foundation | Complete |
 | INFRA-03 | Phase 1: Database Foundation | Complete |
 | INFRA-04 | Phase 1: Database Foundation | Complete |
-| PORT-01 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| PORT-02 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| PORT-03 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| PORT-04 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| PORT-05 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| PORT-06 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| PORT-07 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-01 | Phase 2: Portfolio & Watchlist APIs | Complete |
+| PORT-02 | Phase 2: Portfolio & Watchlist APIs | Complete |
+| PORT-03 | Phase 2: Portfolio & Watchlist APIs | Complete |
+| PORT-04 | Phase 2: Portfolio & Watchlist APIs | Complete |
+| PORT-05 | Phase 2: Portfolio & Watchlist APIs | Complete |
+| PORT-06 | Phase 2: Portfolio & Watchlist APIs | Complete |
+| PORT-07 | Phase 2: Portfolio & Watchlist APIs | Complete |
 | PORT-08 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| PORT-09 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-09 | Phase 2: Portfolio & Watchlist APIs | Complete |
 | PORT-10 | Phase 2: Portfolio & Watchlist APIs | Pending |
-| PORT-11 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-11 | Phase 2: Portfolio & Watchlist APIs | Complete |
 | WATCH-01 | Phase 2: Portfolio & Watchlist APIs | Pending |
 | WATCH-02 | Phase 2: Portfolio & Watchlist APIs | Pending |
 | WATCH-03 | Phase 2: Portfolio & Watchlist APIs | Pending |

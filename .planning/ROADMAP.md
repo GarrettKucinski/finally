@@ -49,7 +49,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Pydantic models, portfolio service (trade execution, P&L), portfolio & history routes
+- [x] 02-01-PLAN.md — Pydantic models, portfolio service (trade execution, P&L), portfolio & history routes
 - [ ] 02-02-PLAN.md — Watchlist CRUD with market data sync, background snapshot tasks, lifespan wiring
 
 ### Phase 3: LLM Chat Integration
@@ -125,7 +125,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Database Foundation | 0/2 | Complete    | 2026-03-02 |
-| 2. Portfolio & Watchlist APIs | 0/2 | Not started | - |
+| 2. Portfolio & Watchlist APIs | 1/2 | In Progress | - |
 | 3. LLM Chat Integration | 0/2 | Not started | - |
 | 4. Frontend Foundation | 0/3 | Not started | - |
 | 5. Visualizations & Chat Panel | 0/3 | Not started | - |
