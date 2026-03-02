@@ -55,3 +55,41 @@ export interface ApiError {
   error: string;
   detail: string;
 }
+
+export interface ChatTradeAction {
+  ticker: string;
+  side: string;
+  quantity: number;
+}
+
+export interface ChatWatchlistAction {
+  ticker: string;
+  action: string;
+}
+
+export interface ChatExecutedTrade {
+  ticker: string;
+  side: string;
+  quantity: number;
+  price: number;
+  total: number;
+}
+
+export interface ChatExecutedActions {
+  trades: ChatExecutedTrade[];
+  watchlist_changes: ChatWatchlistAction[];
+  errors: Array<{ type: string; detail: string; ticker: string }>;
+}
+
+export interface ChatResponse {
+  message: string;
+  trades: ChatTradeAction[];
+  watchlist_changes: ChatWatchlistAction[];
+  executed_actions: ChatExecutedActions;
+}
+
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+  executed_actions?: ChatExecutedActions;
+}

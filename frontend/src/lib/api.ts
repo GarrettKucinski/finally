@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import type {
   ApiError,
+  ChatResponse,
   PortfolioResponse,
   SnapshotPoint,
   TradeRequest,
@@ -64,4 +65,11 @@ export async function removeTicker(ticker: string): Promise<void> {
 
 export function fetchPortfolioHistory(): Promise<SnapshotPoint[]> {
   return apiFetch<SnapshotPoint[]>("/api/portfolio/history");
+}
+
+export function sendChat(message: string): Promise<ChatResponse> {
+  return apiFetch<ChatResponse>("/api/chat", {
+    method: "POST",
+    body: JSON.stringify({ message }),
+  });
 }
