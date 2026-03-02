@@ -1,7 +1,7 @@
-# Requirements: FinAlly — AI Trading Workstation
+# Requirements: FinAlly -- AI Trading Workstation
 
 **Defined:** 2026-03-02
-**Core Value:** Users can watch live-streaming prices, trade a simulated portfolio, and chat with an AI assistant that can both analyze and execute trades — all in a single, polished dark-themed terminal UI.
+**Core Value:** Users can watch live-streaming prices, trade a simulated portfolio, and chat with an AI assistant that can both analyze and execute trades -- all in a single, polished dark-themed terminal UI.
 
 ## v1 Requirements
 
@@ -41,7 +41,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **CHAT-01**: `POST /api/chat` accepts a user message and returns a complete JSON response (message + optional trades + optional watchlist_changes)
 - [ ] **CHAT-02**: Chat endpoint builds portfolio context (cash, positions with P&L, watchlist with live prices, total value) and includes it in the LLM prompt
 - [ ] **CHAT-03**: Chat endpoint loads the last 20 messages from chat_messages table as conversation history
-- [ ] **CHAT-04**: LLM is called via LiteLLM → OpenRouter with Cerebras inference, requesting structured JSON output
+- [ ] **CHAT-04**: LLM is called via LiteLLM -> OpenRouter with Cerebras inference, requesting structured JSON output
 - [ ] **CHAT-05**: Trades in LLM response are auto-executed through the same `execute_trade` path as manual trades
 - [ ] **CHAT-06**: Watchlist changes in LLM response are auto-executed through the watchlist service
 - [ ] **CHAT-07**: Failed trade/watchlist actions include error details in the response so the LLM can inform the user
@@ -115,15 +115,15 @@ Explicitly excluded. Documented to prevent scope creep.
 | Feature | Reason |
 |---------|--------|
 | User authentication / login | Single pre-seeded default user for v1; schema supports future multi-user via user_id FKs |
-| Limit orders / order book | Eliminates order book, matching engine, partial fills — dramatically simpler portfolio math |
+| Limit orders / order book | Eliminates order book, matching engine, partial fills -- dramatically simpler portfolio math |
 | Real-time LLM token streaming | Cerebras is fast enough; loading indicator sufficient; streaming breaks structured output parsing |
 | Mobile-native app | Desktop-first terminal aesthetic; web is functional on tablet |
 | Cloud deployment (Terraform) | Stretch goal, not core build |
-| WebSockets | SSE is sufficient for one-way server→client push |
+| WebSockets | SSE is sufficient for one-way server->client push |
 | Docker volumes | All persistent data in Neon Postgres |
 | Historical price data / backtesting | Fundamental architecture change; charts use SSE data accumulated since page load |
 | Social features / leaderboards | Tonal mismatch with professional terminal aesthetic |
-| Confirmation dialogs for AI trades | Auto-execution without confirmation IS the demo — zero stakes, maximum wow factor |
+| Confirmation dialogs for AI trades | Auto-execution without confirmation IS the demo -- zero stakes, maximum wow factor |
 
 ## Traceability
 
@@ -131,13 +131,65 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (populated during roadmap creation) | | |
+| INFRA-01 | Phase 1: Database Foundation | Pending |
+| INFRA-02 | Phase 1: Database Foundation | Pending |
+| INFRA-03 | Phase 1: Database Foundation | Pending |
+| INFRA-04 | Phase 1: Database Foundation | Pending |
+| PORT-01 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-02 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-03 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-04 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-05 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-06 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-07 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-08 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-09 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-10 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| PORT-11 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| WATCH-01 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| WATCH-02 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| WATCH-03 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| WATCH-04 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| WATCH-05 | Phase 2: Portfolio & Watchlist APIs | Pending |
+| CHAT-01 | Phase 3: LLM Chat Integration | Pending |
+| CHAT-02 | Phase 3: LLM Chat Integration | Pending |
+| CHAT-03 | Phase 3: LLM Chat Integration | Pending |
+| CHAT-04 | Phase 3: LLM Chat Integration | Pending |
+| CHAT-05 | Phase 3: LLM Chat Integration | Pending |
+| CHAT-06 | Phase 3: LLM Chat Integration | Pending |
+| CHAT-07 | Phase 3: LLM Chat Integration | Pending |
+| CHAT-08 | Phase 3: LLM Chat Integration | Pending |
+| CHAT-09 | Phase 3: LLM Chat Integration | Pending |
+| UI-01 | Phase 4: Frontend Foundation | Pending |
+| UI-02 | Phase 4: Frontend Foundation | Pending |
+| UI-03 | Phase 4: Frontend Foundation | Pending |
+| UI-04 | Phase 4: Frontend Foundation | Pending |
+| UI-05 | Phase 4: Frontend Foundation | Pending |
+| UI-06 | Phase 4: Frontend Foundation | Pending |
+| UI-07 | Phase 4: Frontend Foundation | Pending |
+| VIZ-01 | Phase 4: Frontend Foundation | Pending |
+| VIZ-06 | Phase 4: Frontend Foundation | Pending |
+| VIZ-07 | Phase 4: Frontend Foundation | Pending |
+| VIZ-08 | Phase 4: Frontend Foundation | Pending |
+| VIZ-02 | Phase 5: Visualizations & Chat Panel | Pending |
+| VIZ-03 | Phase 5: Visualizations & Chat Panel | Pending |
+| VIZ-04 | Phase 5: Visualizations & Chat Panel | Pending |
+| VIZ-05 | Phase 5: Visualizations & Chat Panel | Pending |
+| VIZ-09 | Phase 5: Visualizations & Chat Panel | Pending |
+| VIZ-10 | Phase 5: Visualizations & Chat Panel | Pending |
+| OPS-01 | Phase 6: Docker & E2E Tests | Pending |
+| OPS-02 | Phase 6: Docker & E2E Tests | Pending |
+| OPS-03 | Phase 6: Docker & E2E Tests | Pending |
+| OPS-04 | Phase 6: Docker & E2E Tests | Pending |
+| OPS-05 | Phase 6: Docker & E2E Tests | Pending |
+| OPS-06 | Phase 6: Docker & E2E Tests | Pending |
+| OPS-07 | Phase 6: Docker & E2E Tests | Pending |
 
 **Coverage:**
-- v1 requirements: 46 total
-- Mapped to phases: 0
-- Unmapped: 46
+- v1 requirements: 53 total
+- Mapped to phases: 53
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-02*
-*Last updated: 2026-03-02 after initial definition*
+*Last updated: 2026-03-02 after roadmap creation (traceability populated)*
