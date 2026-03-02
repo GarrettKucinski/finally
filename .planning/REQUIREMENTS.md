@@ -9,9 +9,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Database & Infrastructure
 
-- [ ] **INFRA-01**: Backend initializes asyncpg connection pool on startup with Neon Postgres (`statement_cache_size=0`)
-- [ ] **INFRA-02**: Backend creates all tables on startup via `CREATE TABLE IF NOT EXISTS` (users, users_profile, watchlist, positions, trades, portfolio_snapshots, chat_messages)
-- [ ] **INFRA-03**: Backend seeds default user (fixed UUID, $10,000 cash) and 10 watchlist tickers if tables are empty
+- [x] **INFRA-01**: Backend initializes asyncpg connection pool on startup with Neon Postgres (`statement_cache_size=0`)
+- [x] **INFRA-02**: Backend creates all tables on startup via `CREATE TABLE IF NOT EXISTS` (users, users_profile, watchlist, positions, trades, portfolio_snapshots, chat_messages)
+- [x] **INFRA-03**: Backend seeds default user (fixed UUID, $10,000 cash) and 10 watchlist tickers if tables are empty
 - [ ] **INFRA-04**: `GET /api/health` returns 200 with DB connectivity check
 
 ### Portfolio
@@ -131,9 +131,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 1: Database Foundation | Pending |
-| INFRA-02 | Phase 1: Database Foundation | Pending |
-| INFRA-03 | Phase 1: Database Foundation | Pending |
+| INFRA-01 | Phase 1: Database Foundation | Complete |
+| INFRA-02 | Phase 1: Database Foundation | Complete |
+| INFRA-03 | Phase 1: Database Foundation | Complete |
 | INFRA-04 | Phase 1: Database Foundation | Pending |
 | PORT-01 | Phase 2: Portfolio & Watchlist APIs | Pending |
 | PORT-02 | Phase 2: Portfolio & Watchlist APIs | Pending |
