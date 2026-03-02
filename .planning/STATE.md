@@ -44,11 +44,11 @@ Progress: [#########.] 92%
 | 02-portfolio-watchlist-apis | 2 | 7min | 3.5min |
 | 03-llm-chat-integration | 2 | 6min | 3.0min |
 | 04-frontend-foundation | 3 | 20min | 6.7min |
-| 05-visualizations-chat-panel | 1 | 3min | 3.0min |
+| 05-visualizations-chat-panel | 2 | 6min | 3.0min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (3min), 04-01 (3min), 04-02 (5min), 04-03 (12min), 05-01 (3min)
-- Trend: Steady (05-01 fast -- chart component creation without complex integration)
+- Last 5 plans: 04-01 (3min), 04-02 (5min), 04-03 (12min), 05-01 (3min), 05-02 (3min)
+- Trend: Steady (05-02 fast -- chat component creation with typed store)
 
 *Updated after each plan completion*
 
@@ -94,6 +94,8 @@ Recent decisions affecting current work:
 - 05-01: Lightweight Charts v5 API (addSeries(LineSeries)) used instead of deprecated v4 addLineSeries
 - 05-01: Treemap index signature added to HeatmapPosition for Recharts v3 type compatibility
 - 05-01: Recharts Tooltip formatters use untyped params with Number/String coercion for v3 type safety
+- 05-02: Cross-store refresh: chatStore calls portfolioStore.getState().refresh() after AI trades (not a hook, from Zustand action)
+- 05-02: No chat history fetch on mount -- start fresh each session per research anti-pattern guidance
 
 ### Pending Todos
 
@@ -107,5 +109,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 05-01-PLAN.md (Chart components: TickerChart, PortfolioHeatmap, PnLChart)
+Stopped at: Completed 05-02-PLAN.md (Chat panel: chatStore, ChatPanel, ChatMessage, ChatActionCard)
 Resume file: None
