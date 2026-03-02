@@ -55,20 +55,36 @@ async def init_db(database_url: str) -> asyncpg.Pool:
 async def _seed_if_empty(conn: asyncpg.Connection) -> None:
     """Insert default seed data if the default user doesn't exist.
 
-    Checks for the specific default user UUID. If missing, executes seed.sql.
-    This handles the case where the DB has stale data from previous runs
-    but the default user was removed or never created.
+    Checks for the specific default user UUID. If missing, cleans up any
+    conflicting user with the same email but a different UUID (stale data
+    from previous runs), then executes seed.sql.
     """
     default_user_id = "00000000-0000-0000-0000-000000000001"
     exists = await conn.fetchval(
         "SELECT 1 FROM users WHERE id = $1", default_user_id
     )
-    if not exists:
-        logger.info("Default user not found — seeding default data...")
-        await conn.execute(_SEED_SQL)
-        logger.info("Seed data inserted.")
-    else:
+    if exists:
         logger.info("Default user exists — skipping seed.")
+        return
+
+    # Clean up any user with the default email but wrong UUID (stale Neon data)
+    old_id = await conn.fetchval(
+        "SELECT id FROM users WHERE email = 'default@finally.app'"
+    )
+    if old_id:
+        logger.info("Found stale default user (wrong UUID), cleaning up...")
+        for table in [
+            "chat_messages", "portfolio_snapshots", "trades",
+            "positions", "watchlist", "users_profile",
+        ]:
+            await conn.execute(
+                f"DELETE FROM {table} WHERE user_id = $1", old_id  # noqa: S608
+            )
+        await conn.execute("DELETE FROM users WHERE id = $1", old_id)
+
+    logger.info("Seeding default data...")
+    await conn.execute(_SEED_SQL)
+    logger.info("Seed data inserted.")
 
 
 async def close_db(pool: asyncpg.Pool) -> None:

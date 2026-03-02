@@ -139,13 +139,13 @@ class TestSeedIfEmpty:
     async def test_seed_if_empty_seeds_when_default_user_missing(self):
         """_seed_if_empty executes seed SQL when default user doesn't exist."""
         mock_conn = AsyncMock()
-        mock_conn.fetchval = AsyncMock(return_value=None)
+        # First fetchval: user by UUID → None, Second: user by email → None
+        mock_conn.fetchval = AsyncMock(side_effect=[None, None])
         mock_conn.execute = AsyncMock()
 
         from app.db import _seed_if_empty
 
         await _seed_if_empty(mock_conn)
-        # Should have called execute with the seed SQL
         assert mock_conn.execute.called
 
     @pytest.mark.asyncio
@@ -158,9 +158,25 @@ class TestSeedIfEmpty:
         from app.db import _seed_if_empty
 
         await _seed_if_empty(mock_conn)
-        # fetchval was called to check for default user, but execute should NOT be called
         mock_conn.fetchval.assert_called_once()
         mock_conn.execute.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_seed_cleans_stale_user_with_wrong_uuid(self):
+        """_seed_if_empty removes stale user with same email but wrong UUID."""
+        import uuid
+
+        stale_uuid = uuid.uuid4()
+        mock_conn = AsyncMock()
+        # First fetchval: user by UUID → None, Second: user by email → stale UUID
+        mock_conn.fetchval = AsyncMock(side_effect=[None, stale_uuid])
+        mock_conn.execute = AsyncMock()
+
+        from app.db import _seed_if_empty
+
+        await _seed_if_empty(mock_conn)
+        # 6 table cleanups + 1 user delete + 1 seed SQL = 8 execute calls
+        assert mock_conn.execute.call_count == 8
 
 
 class TestCloseDb:
