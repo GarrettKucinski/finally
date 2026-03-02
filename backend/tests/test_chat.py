@@ -12,6 +12,9 @@ Verifies:
 - Mock mode returns deterministic response without calling litellm (CHAT-09)
 - Mock response has correct shape (CHAT-09)
 - 500 returned on unexpected exception
+- LLM called with correct params: model, response_format, reasoning_effort, extra_body, api_key (CHAT-04)
+- Retry-once on parse failure, fallback on second failure (N4)
+- Full orchestration with action execution (CHAT-05, CHAT-06)
 
 Uses established test pattern: mock app.state, httpx.ASGITransport.
 """
@@ -362,3 +365,204 @@ async def test_chat_endpoint_500_on_exception(monkeypatch):
     data = response.json()
     assert data["error"] == "Chat failed"
     assert "boom" in data["detail"]
+
+
+# ---------------------------------------------------------------------------
+# LLM call parameters (CHAT-04)
+# ---------------------------------------------------------------------------
+
+
+@patch("app.services.chat._persist_assistant_message")
+@patch("app.services.chat._persist_user_message")
+@patch("app.services.chat._load_history")
+@patch("app.services.chat.get_watchlist")
+@patch("app.services.chat.get_portfolio")
+@patch("app.services.chat.acompletion")
+async def test_llm_called_with_correct_params(
+    mock_acompletion,
+    mock_get_portfolio,
+    mock_get_watchlist,
+    mock_load_history,
+    mock_persist_user,
+    mock_persist_assistant,
+    monkeypatch,
+):
+    """When settings.llm_mock=False, acompletion is called with correct model,
+    response_format, reasoning_effort, extra_body, and api_key (CHAT-04)."""
+    from app.models.chat import LLMResponse
+    from app.services.chat import orchestrate_chat
+
+    mock_get_portfolio.return_value = {
+        "cash_balance": 10000.0,
+        "total_value": 10000.0,
+        "positions": [],
+    }
+    mock_get_watchlist.return_value = []
+    mock_load_history.return_value = []
+
+    # Set up mock acompletion return
+    mock_response = MagicMock()
+    mock_response.choices = [MagicMock()]
+    mock_response.choices[0].message.content = '{"message": "test response", "trades": [], "watchlist_changes": []}'
+    mock_acompletion.return_value = mock_response
+
+    mock_pool = AsyncMock()
+    mock_price_cache = MagicMock()
+    mock_market_source = AsyncMock()
+
+    mock_settings = MagicMock()
+    mock_settings.llm_mock = False
+    mock_settings.openrouter_api_key = "test-api-key-123"
+
+    result = await orchestrate_chat(
+        mock_pool, mock_price_cache, mock_market_source, mock_settings, "hello"
+    )
+
+    # Verify acompletion was called with correct params
+    mock_acompletion.assert_called_once()
+    call_kwargs = mock_acompletion.call_args.kwargs
+    assert call_kwargs["model"] == "openrouter/openai/gpt-oss-120b"
+    assert call_kwargs["response_format"] == LLMResponse
+    assert call_kwargs["reasoning_effort"] == "low"
+    assert call_kwargs["extra_body"] == {"provider": {"order": ["cerebras"]}}
+    assert call_kwargs["api_key"] == "test-api-key-123"
+
+    # Verify response was processed
+    assert result["message"] == "test response"
+
+
+# ---------------------------------------------------------------------------
+# Retry logic (decision N4)
+# ---------------------------------------------------------------------------
+
+
+@patch("app.services.chat.acompletion")
+async def test_llm_retry_on_parse_failure(mock_acompletion):
+    """When acompletion fails twice, _call_llm retries once and returns fallback (N4)."""
+    from app.services.chat import _call_llm
+
+    mock_acompletion.side_effect = Exception("Parse error")
+
+    mock_settings = MagicMock()
+    mock_settings.openrouter_api_key = "test-key"
+
+    portfolio = {"cash_balance": 10000.0, "total_value": 10000.0, "positions": []}
+    watchlist = []
+
+    result = await _call_llm(mock_settings, portfolio, watchlist, [], "test")
+
+    assert mock_acompletion.call_count == 2
+    assert result.message  # Non-empty fallback
+    assert result.trades == []
+    assert result.watchlist_changes == []
+
+
+@patch("app.services.chat.acompletion")
+async def test_llm_fallback_response_shape(mock_acompletion):
+    """Fallback response after retry failure has non-empty message, empty trades,
+    empty watchlist_changes."""
+    from app.services.chat import _call_llm
+
+    mock_acompletion.side_effect = Exception("API timeout")
+
+    mock_settings = MagicMock()
+    mock_settings.openrouter_api_key = "test-key"
+
+    portfolio = {"cash_balance": 5000.0, "total_value": 5000.0, "positions": []}
+    watchlist = []
+
+    result = await _call_llm(mock_settings, portfolio, watchlist, [], "help me")
+
+    assert isinstance(result.message, str)
+    assert len(result.message) > 0
+    assert "sorry" in result.message.lower() or "issue" in result.message.lower()
+    assert result.trades == []
+    assert result.watchlist_changes == []
+
+
+# ---------------------------------------------------------------------------
+# Full orchestration with action execution (integration)
+# ---------------------------------------------------------------------------
+
+
+@patch("app.services.chat._persist_assistant_message")
+@patch("app.services.chat._persist_user_message")
+@patch("app.services.chat._load_history")
+@patch("app.services.chat.remove_ticker")
+@patch("app.services.chat.add_ticker")
+@patch("app.services.chat.record_snapshot")
+@patch("app.services.chat.execute_trade")
+@patch("app.services.chat._call_llm")
+@patch("app.services.chat.get_watchlist")
+@patch("app.services.chat.get_portfolio")
+async def test_full_orchestration_with_actions(
+    mock_get_portfolio,
+    mock_get_watchlist,
+    mock_call_llm,
+    mock_execute_trade,
+    mock_record_snapshot,
+    mock_add_ticker,
+    mock_remove_ticker,
+    mock_load_history,
+    mock_persist_user,
+    mock_persist_assistant,
+):
+    """End-to-end test: LLM response with trades and watchlist changes flows through
+    execution pipeline and results appear in the response."""
+    from app.models.chat import LLMResponse, TradeAction, WatchlistAction
+    from app.services.chat import orchestrate_chat
+
+    mock_get_portfolio.return_value = {
+        "cash_balance": 10000.0,
+        "total_value": 10000.0,
+        "positions": [],
+    }
+    mock_get_watchlist.return_value = []
+    mock_load_history.return_value = []
+
+    # LLM returns a response with a trade and a watchlist change
+    mock_call_llm.return_value = LLMResponse(
+        message="I'll buy AAPL and add PYPL to your watchlist.",
+        trades=[TradeAction(ticker="AAPL", side="buy", quantity=10)],
+        watchlist_changes=[WatchlistAction(ticker="PYPL", action="add")],
+    )
+
+    mock_execute_trade.return_value = {
+        "ticker": "AAPL",
+        "side": "buy",
+        "quantity": 10,
+        "price": 150.0,
+        "total": 1500.0,
+    }
+
+    mock_pool = AsyncMock()
+    mock_price_cache = MagicMock()
+    mock_market_source = AsyncMock()
+
+    mock_settings = MagicMock()
+    mock_settings.llm_mock = False
+
+    result = await orchestrate_chat(
+        mock_pool, mock_price_cache, mock_market_source, mock_settings, "buy some AAPL"
+    )
+
+    # Verify trade was executed
+    mock_execute_trade.assert_called_once_with(mock_pool, mock_price_cache, "AAPL", "buy", 10)
+    mock_record_snapshot.assert_called_once_with(mock_pool, mock_price_cache)
+
+    # Verify watchlist change was executed
+    mock_add_ticker.assert_called_once_with(mock_pool, mock_market_source, "PYPL")
+
+    # Verify response contains executed actions
+    assert result["message"] == "I'll buy AAPL and add PYPL to your watchlist."
+    assert len(result["trades"]) == 1
+    assert result["trades"][0]["ticker"] == "AAPL"
+    assert len(result["watchlist_changes"]) == 1
+    assert result["watchlist_changes"][0]["ticker"] == "PYPL"
+    assert len(result["executed_actions"]["trades"]) == 1
+    assert len(result["executed_actions"]["watchlist_changes"]) == 1
+    assert result["executed_actions"]["errors"] == []
+
+    # Verify persistence was called
+    mock_persist_user.assert_called_once()
+    mock_persist_assistant.assert_called_once()

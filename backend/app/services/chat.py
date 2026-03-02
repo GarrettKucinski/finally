@@ -15,6 +15,7 @@ import json
 import logging
 
 from asyncpg import Pool
+from litellm import acompletion
 
 from app.config import Settings
 from app.market.cache import PriceCache
@@ -163,8 +164,6 @@ async def _call_llm(
 
     Implements retry-once on parse failure (decision N4).
     """
-    from litellm import acompletion
-
     MODEL = "openrouter/openai/gpt-oss-120b"
     EXTRA_BODY = {"provider": {"order": ["cerebras"]}}
 
