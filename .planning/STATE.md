@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-02T20:45:26.514Z"
+status: in-progress
+last_updated: "2026-03-02T22:59:48.000Z"
 progress:
-  total_phases: 5
+  total_phases: 6
   completed_phases: 5
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 14
+  completed_plans: 13
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Users can watch live-streaming prices, trade a simulated portfolio, and chat with an AI assistant that can both analyze and execute trades -- all in a single, polished dark-themed terminal UI.
-**Current focus:** Phase 5 complete. All visualizations and chat panel integrated into Dashboard. Ready for Phase 6 (Docker & E2E Tests).
+**Current focus:** Phase 6 in progress. Docker infrastructure (06-01) complete. E2E tests (06-02) next.
 
 ## Current Position
 
-Phase: 5 of 6 (Visualizations & Chat Panel) -- COMPLETE
-Plan: 3 of 3 in current phase -- COMPLETE
-Status: Phase 05 complete, all plans done
-Last activity: 2026-03-02 -- Completed 05-03 (Dashboard integration: priceStore timestamps, WatchlistPanel selection, full layout wiring)
+Phase: 6 of 6 (Docker & E2E Tests) -- IN PROGRESS
+Plan: 1 of 2 in current phase -- COMPLETE
+Status: 06-01 complete (Docker infrastructure), 06-02 pending (E2E tests)
+Last activity: 2026-03-02 -- Completed 06-01 (Docker infrastructure: Dockerfiles, docker-compose, .dockerignore)
 
-Progress: [##########] 100%
+Progress: [#########-] 93%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
-- Average duration: 5.5min
-- Total execution time: 1.07 hours
+- Total plans completed: 13
+- Average duration: 5.2min
+- Total execution time: 1.08 hours
 
 **By Phase:**
 
@@ -45,10 +45,11 @@ Progress: [##########] 100%
 | 03-llm-chat-integration | 2 | 6min | 3.0min |
 | 04-frontend-foundation | 3 | 20min | 6.7min |
 | 05-visualizations-chat-panel | 3 | 33min | 11.0min |
+| 06-docker-e2e-tests | 1 | 1min | 1.0min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (5min), 04-03 (12min), 05-01 (3min), 05-02 (3min), 05-03 (27min)
-- Trend: 05-03 longer due to checkpoint verification loop (timestamp dedup fix)
+- Last 5 plans: 04-03 (12min), 05-01 (3min), 05-02 (3min), 05-03 (27min), 06-01 (1min)
+- Trend: 06-01 fast (file creation only, no complex logic)
 
 *Updated after each plan completion*
 
@@ -100,6 +101,10 @@ Recent decisions affecting current work:
 - 05-03: Timestamp dedup in chartHistory -- same-second updates replace last point for Lightweight Charts ascending-time constraint
 - 05-03: Floating chat toggle button at bottom-right rather than modifying Header component
 - 05-03: Portfolio history refetch triggered by positions.length change as trade detection heuristic
+- 06-01: Node 22-slim base image for frontend stages (matches project Node version)
+- 06-01: Official uv base image (ghcr.io/astral-sh/uv:python3.12-bookworm-slim) for backend
+- 06-01: Python stdlib urllib for healthcheck (no curl install needed in container)
+- 06-01: HOSTNAME=0.0.0.0 for standalone Next.js server to listen on all interfaces
 
 ### Pending Todos
 
@@ -113,5 +118,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 05-03-PLAN.md (Dashboard integration: all Phase 5 components wired)
+Stopped at: Completed 06-01-PLAN.md (Docker infrastructure: Dockerfiles, docker-compose, .dockerignore)
 Resume file: None

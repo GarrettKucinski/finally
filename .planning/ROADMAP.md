@@ -114,8 +114,8 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
+- [x] 06-01-PLAN.md -- Dockerfiles, .dockerignore, docker-compose.yml, next.config.ts standalone output
+- [ ] 06-02-PLAN.md -- Playwright E2E test suite with docker-compose.test.yml
 
 ## Progress
 
@@ -129,4 +129,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. LLM Chat Integration | 0/2 | Not started | - |
 | 4. Frontend Foundation | 3/3 | Complete | 2026-03-02 |
 | 5. Visualizations & Chat Panel | 3/3 | Complete | 2026-03-02 |
-| 6. Docker & E2E Tests | 0/2 | Not started | - |
+| 6. Docker & E2E Tests | 1/2 | In Progress | - |
