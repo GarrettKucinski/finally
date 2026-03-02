@@ -10,6 +10,7 @@ Tests verify:
 """
 
 import pathlib
+from contextlib import asynccontextmanager
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -17,6 +18,19 @@ import pytest
 
 # Path to SQL files for content verification
 SCHEMA_DIR = pathlib.Path(__file__).parent.parent / "app" / "schema"
+
+
+def _make_mock_pool(mock_conn):
+    """Create a mock asyncpg pool whose acquire() works as an async context manager."""
+    mock_pool = MagicMock()
+
+    @asynccontextmanager
+    async def fake_acquire():
+        yield mock_conn
+
+    mock_pool.acquire = fake_acquire
+    mock_pool.close = AsyncMock()
+    return mock_pool
 
 
 class TestPoolCreation:
@@ -27,14 +41,11 @@ class TestPoolCreation:
         """init_db creates asyncpg pool with statement_cache_size=0 (Neon compat)."""
         monkeypatch.setenv("DATABASE_URL", "postgresql://user:pass@host/db")
 
-        mock_pool = AsyncMock()
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value=1)  # user exists, skip seed
 
-        # Make pool.acquire() work as async context manager
-        mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
-        mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
+        mock_pool = _make_mock_pool(mock_conn)
 
         with patch("asyncpg.create_pool", new_callable=AsyncMock, return_value=mock_pool) as mock_create:
             from app.db import init_db
@@ -49,13 +60,11 @@ class TestPoolCreation:
         """init_db creates pool with min_size=2, max_size=10."""
         monkeypatch.setenv("DATABASE_URL", "postgresql://user:pass@host/db")
 
-        mock_pool = AsyncMock()
         mock_conn = AsyncMock()
         mock_conn.execute = AsyncMock()
         mock_conn.fetchval = AsyncMock(return_value=1)
 
-        mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
-        mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
+        mock_pool = _make_mock_pool(mock_conn)
 
         with patch("asyncpg.create_pool", new_callable=AsyncMock, return_value=mock_pool) as mock_create:
             from app.db import init_db

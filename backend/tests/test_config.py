@@ -36,9 +36,12 @@ class TestSettings:
     def test_settings_defaults(self, monkeypatch):
         """Optional fields have correct defaults: massive_api_key='', llm_mock=False, openrouter_api_key=''."""
         monkeypatch.setenv("DATABASE_URL", "postgresql://user:pass@host/db")
+        monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+        monkeypatch.delenv("MASSIVE_API_KEY", raising=False)
+        monkeypatch.delenv("LLM_MOCK", raising=False)
         from app.config import Settings
 
-        s = Settings()
+        s = Settings(_env_file=None)
         assert s.massive_api_key == ""
         assert s.llm_mock is False
         assert s.openrouter_api_key == ""
