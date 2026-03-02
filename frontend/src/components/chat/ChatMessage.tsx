@@ -5,19 +5,20 @@ import { ChatActionCard } from "./ChatActionCard";
 
 interface ChatMessageProps {
   message: ChatMessageType;
+  messageIndex: number;
 }
 
 function hasActions(message: ChatMessageType): boolean {
+  if (message.proposed_trades && message.proposed_trades.length > 0) return true;
   if (!message.executed_actions) return false;
   const a = message.executed_actions;
   return (
-    (a.trades?.length ?? 0) > 0 ||
     (a.watchlist_changes?.length ?? 0) > 0 ||
     (a.errors?.length ?? 0) > 0
   );
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message, messageIndex }: ChatMessageProps) {
   const isUser = message.role === "user";
 
   return (
@@ -33,8 +34,12 @@ export function ChatMessage({ message }: ChatMessageProps) {
         }`}
       >
         <p className="whitespace-pre-wrap">{message.content}</p>
-        {!isUser && hasActions(message) && message.executed_actions && (
-          <ChatActionCard actions={message.executed_actions} />
+        {!isUser && hasActions(message) && (
+          <ChatActionCard
+            actions={message.executed_actions}
+            proposed_trades={message.proposed_trades}
+            messageIndex={messageIndex}
+          />
         )}
       </div>
     </div>

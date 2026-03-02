@@ -76,20 +76,31 @@ export interface ChatExecutedTrade {
 }
 
 export interface ChatExecutedActions {
-  trades: ChatExecutedTrade[];
   watchlist_changes: ChatWatchlistAction[];
   errors: Array<{ type: string; detail: string; ticker: string }>;
 }
 
 export interface ChatResponse {
   message: string;
-  trades: ChatTradeAction[];
+  proposed_trades: ChatTradeAction[];
   watchlist_changes: ChatWatchlistAction[];
   executed_actions: ChatExecutedActions;
+}
+
+export type ProposedTradeStatus = "pending" | "confirmed" | "dismissed" | "failed";
+
+export interface ProposedTrade {
+  ticker: string;
+  side: string;
+  quantity: number;
+  status: ProposedTradeStatus;
+  result?: ChatExecutedTrade;
+  error?: string;
 }
 
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   executed_actions?: ChatExecutedActions;
+  proposed_trades?: ProposedTrade[];
 }

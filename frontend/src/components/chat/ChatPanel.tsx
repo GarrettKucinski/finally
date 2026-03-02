@@ -70,7 +70,7 @@ export function ChatPanel({ open, onToggle }: ChatPanelProps) {
         ) : (
           <>
             {messages.map((msg, i) => (
-              <ChatMessage key={i} message={msg} />
+              <ChatMessage key={i} message={msg} messageIndex={i} />
             ))}
             {loading && (
               <div className="mb-2 flex items-start">

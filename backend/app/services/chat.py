@@ -21,7 +21,7 @@ from app.config import Settings
 from app.market.cache import PriceCache
 from app.market.interface import MarketDataSource
 from app.models.chat import LLMResponse
-from app.services.portfolio import execute_trade, get_portfolio, record_snapshot
+from app.services.portfolio import get_portfolio
 from app.services.watchlist import add_ticker, get_watchlist, remove_ticker
 
 logger = logging.getLogger(__name__)
@@ -33,13 +33,14 @@ SYSTEM_PROMPT = """You are FinAlly, an AI trading assistant for a simulated trad
 You help users manage their simulated portfolio by:
 - Analyzing portfolio composition, risk concentration, and P&L
 - Suggesting trades with clear reasoning
-- Executing trades when asked (buy/sell at current market price)
-- Managing the watchlist (adding/removing tickers)
+- Managing the watchlist (adding/removing tickers when asked)
 
-Be concise and data-driven. Format numbers with appropriate precision.
-When suggesting or executing trades, always reference the current price and portfolio impact.
+When you recommend a trade, include it in the trades array of your response. The user will see it as a proposal they can confirm or dismiss — trades are never auto-executed. Feel free to suggest trades whenever your analysis supports a recommendation.
 
-IMPORTANT: You operate in a simulated environment with virtual money. There is no real financial risk.
+Be concise and data-driven. Format numbers with appropriate precision ($X.XX for prices, X.X% for percentages).
+When suggesting trades, reference the current price and expected portfolio impact.
+
+You operate in a simulated environment with virtual money. There is no real financial risk.
 
 Current Portfolio State:
 {portfolio_context}
@@ -84,7 +85,7 @@ async def orchestrate_chat(
     # 7. Return response
     return {
         "message": llm_response.message,
-        "trades": [t.model_dump() for t in llm_response.trades],
+        "proposed_trades": [t.model_dump() for t in llm_response.trades],
         "watchlist_changes": [w.model_dump() for w in llm_response.watchlist_changes],
         "executed_actions": executed_actions,
     }
@@ -175,7 +176,6 @@ async def _call_llm(
                 model=MODEL,
                 messages=messages,
                 response_format=LLMResponse,
-                reasoning_effort="low",
                 extra_body=EXTRA_BODY,
                 api_key=settings.openrouter_api_key,
             )
@@ -217,29 +217,13 @@ async def _execute_actions(
     market_source: MarketDataSource,
     llm_response: LLMResponse,
 ) -> dict:
-    """Execute trades and watchlist changes from the LLM response.
+    """Execute watchlist changes from the LLM response.
 
-    Each action is wrapped in try/except. Successes and failures are
-    tracked separately so the response includes full execution results.
-    A portfolio snapshot is recorded after each successful trade (PORT-09).
+    Trades are NOT executed here — they are returned as proposed_trades
+    for the frontend to render as confirmable cards. Only watchlist
+    changes (low-risk, easily reversible) are auto-executed.
     """
-    results: dict = {"trades": [], "watchlist_changes": [], "errors": []}
-
-    for trade in llm_response.trades:
-        try:
-            trade_result = await execute_trade(
-                pool, price_cache, trade.ticker, trade.side, trade.quantity
-            )
-            await record_snapshot(pool, price_cache)
-            results["trades"].append(trade_result)
-        except ValueError as e:
-            results["errors"].append({
-                "type": "trade",
-                "detail": str(e),
-                "ticker": trade.ticker,
-                "side": trade.side,
-                "quantity": trade.quantity,
-            })
+    results: dict = {"watchlist_changes": [], "errors": []}
 
     for change in llm_response.watchlist_changes:
         try:

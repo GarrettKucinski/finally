@@ -54,6 +54,6 @@ class ChatResponse(BaseModel):
     """Response returned to the frontend from POST /api/chat."""
 
     message: str
-    trades: list[TradeAction] = []
+    proposed_trades: list[TradeAction] = []
     watchlist_changes: list[WatchlistAction] = []
     executed_actions: dict = {}
