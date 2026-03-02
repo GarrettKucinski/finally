@@ -12,6 +12,7 @@ All shared state is stored on app.state for access by route handlers.
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -24,6 +25,7 @@ from .routes.health import router as health_router
 from .routes.portfolio import router as portfolio_router
 from .routes.portfolio_history import router as portfolio_history_router
 from .routes.watchlist import router as watchlist_router
+from .tasks.snapshots import snapshot_cleanup_loop, snapshot_recorder_loop
 from .market.factory import create_market_data_source
 from .market.seed_prices import DEFAULT_WATCHLIST
 from .market.stream import create_stream_router
@@ -41,10 +43,12 @@ async def lifespan(app: FastAPI):
         3. Load watchlist tickers from DB
         4. Create and start market data source
         5. Register SSE streaming router
+        6. Launch background tasks (snapshot recorder + cleanup)
 
     Shutdown:
-        1. Stop market data source
-        2. Close database pool
+        1. Cancel background tasks (before DB pool close!)
+        2. Stop market data source
+        3. Close database pool
     """
     # 1. Load settings
     settings = Settings()
@@ -76,10 +80,24 @@ async def lifespan(app: FastAPI):
     stream_router = create_stream_router(cache)
     app.include_router(stream_router)
 
+    # 6. Launch background tasks (PORT-08, PORT-10)
+    snapshot_task = asyncio.create_task(snapshot_recorder_loop(pool, cache))
+    cleanup_task = asyncio.create_task(snapshot_cleanup_loop(pool))
+    logger.info("Background tasks started (snapshot recorder + cleanup).")
+
     yield
 
-    # Shutdown
+    # Shutdown: cancel background tasks BEFORE closing DB pool (Pitfall 3)
     logger.info("Shutting down...")
+    snapshot_task.cancel()
+    cleanup_task.cancel()
+    for task in [snapshot_task, cleanup_task]:
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+    logger.info("Background tasks cancelled.")
+
     await source.stop()
     await close_db(pool)
     logger.info("Shutdown complete.")
