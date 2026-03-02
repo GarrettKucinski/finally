@@ -21,6 +21,8 @@ from .config import Settings
 from .db import close_db, init_db
 from .market.cache import PriceCache
 from .routes.health import router as health_router
+from .routes.portfolio import router as portfolio_router
+from .routes.portfolio_history import router as portfolio_history_router
 from .market.factory import create_market_data_source
 from .market.seed_prices import DEFAULT_WATCHLIST
 from .market.stream import create_stream_router
@@ -84,3 +86,5 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="FinAlly", lifespan=lifespan)
 app.include_router(health_router)
+app.include_router(portfolio_router)
+app.include_router(portfolio_history_router)
