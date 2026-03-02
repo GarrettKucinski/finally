@@ -78,7 +78,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **OPS-03**: `docker-compose.yml` orchestrates both services with proper networking and environment variables
 - [x] **OPS-04**: Frontend proxies `/api/*` to `http://backend:8000` via Next.js rewrites (no CORS needed)
 - [x] **OPS-05**: `docker compose up` starts both services from a single command with no manual setup
-- [ ] **OPS-06**: E2E tests via Playwright in `test/docker-compose.test.yml` with `LLM_MOCK=true`
+- [x] **OPS-06**: E2E tests via Playwright in `test/docker-compose.test.yml` with `LLM_MOCK=true`
 - [x] **OPS-07**: `.env.example` committed with all required/optional environment variables documented
 
 ## v2 Requirements
@@ -182,7 +182,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | OPS-03 | Phase 6: Docker & E2E Tests | Complete |
 | OPS-04 | Phase 6: Docker & E2E Tests | Complete |
 | OPS-05 | Phase 6: Docker & E2E Tests | Complete |
-| OPS-06 | Phase 6: Docker & E2E Tests | Pending |
+| OPS-06 | Phase 6: Docker & E2E Tests | Complete |
 | OPS-07 | Phase 6: Docker & E2E Tests | Complete |
 
 **Coverage:**

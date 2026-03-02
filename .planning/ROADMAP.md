@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: LLM Chat Integration** - AI assistant with structured outputs, auto-execution pipeline, mock mode
 - [x] **Phase 4: Frontend Foundation** - Next.js dark terminal UI, SSE client, watchlist with live prices, trade bar, positions table (completed 2026-03-02)
 - [x] **Phase 5: Visualizations & Chat Panel** - Sparklines, detail chart, portfolio heatmap, P&L chart, AI chat sidebar (completed 2026-03-02)
-- [ ] **Phase 6: Docker & E2E Tests** - Dockerfiles, docker-compose orchestration, Playwright E2E test suite
+- [x] **Phase 6: Docker & E2E Tests** - Dockerfiles, docker-compose orchestration, Playwright E2E test suite (completed 2026-03-02)
 
 ## Phase Details
 
@@ -115,7 +115,7 @@ Plans:
 
 Plans:
 - [x] 06-01-PLAN.md -- Dockerfiles, .dockerignore, docker-compose.yml, next.config.ts standalone output
-- [ ] 06-02-PLAN.md -- Playwright E2E test suite with docker-compose.test.yml
+- [x] 06-02-PLAN.md -- Playwright E2E test suite with docker-compose.test.yml
 
 ## Progress
 
@@ -129,4 +129,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. LLM Chat Integration | 0/2 | Not started | - |
 | 4. Frontend Foundation | 3/3 | Complete | 2026-03-02 |
 | 5. Visualizations & Chat Panel | 3/3 | Complete | 2026-03-02 |
-| 6. Docker & E2E Tests | 1/2 | In Progress | - |
+| 6. Docker & E2E Tests | 2/2 | Complete | 2026-03-02 |
