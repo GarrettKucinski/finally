@@ -78,12 +78,12 @@ Plans:
   3. Connection status indicator in the header shows green (connected), yellow (reconnecting), or red (disconnected) reflecting the actual SSE connection state
   4. User can buy and sell shares using the trade bar, see their positions update in the positions table (ticker, qty, avg cost, current price, P&L), and see cash/total value update in the header
   5. API errors display as toast or inline messages without crashing the UI, and all API calls use relative `/api/*` paths proxied through Next.js rewrites
-**Plans**: 3 plans
+**Plans**: 3 plans (all complete)
 
 Plans:
 - [x] 04-01-PLAN.md -- Next.js scaffold, dark theme, Zustand stores, SSE hook, typed API client
 - [x] 04-02-PLAN.md -- UI components: Header, WatchlistPanel, PositionsTable, TradeBar, Dashboard layout
-- [ ] 04-03-PLAN.md -- Gap closure: SSE through Next.js rewrites (UI-07), sparkline mini-charts (VIZ-01)
+- [x] 04-03-PLAN.md -- Gap closure: SSE through Next.js Route Handler proxy (UI-07), sparkline mini-charts (VIZ-01)
 
 ### Phase 5: Visualizations & Chat Panel
 **Goal**: Users experience the differentiating features -- sparkline mini-charts, a detailed ticker chart, portfolio heatmap, P&L history chart, and an AI chat sidebar with inline action cards
@@ -127,6 +127,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Database Foundation | 0/2 | Complete    | 2026-03-02 |
 | 2. Portfolio & Watchlist APIs | 1/2 | In Progress | - |
 | 3. LLM Chat Integration | 0/2 | Not started | - |
-| 4. Frontend Foundation | 2/2 | Complete | 2026-03-02 |
+| 4. Frontend Foundation | 3/3 | Complete | 2026-03-02 |
 | 5. Visualizations & Chat Panel | 0/3 | Not started | - |
 | 6. Docker & E2E Tests | 0/2 | Not started | - |
