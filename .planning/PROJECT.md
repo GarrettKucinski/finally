@@ -2,7 +2,7 @@
 
 ## What This Is
 
-FinAlly (Finance Ally) is a visually stunning AI-powered trading workstation that streams live market data, lets users trade a simulated portfolio, and integrates an LLM chat assistant that can analyze positions and execute trades on the user's behalf. It looks and feels like a modern Bloomberg terminal with an AI copilot. This is the capstone project for an agentic AI coding course, built entirely by coding agents.
+FinAlly (Finance Ally) is a fully functional AI-powered trading workstation that streams live market data, lets users trade a simulated portfolio, and integrates an LLM chat assistant that can analyze positions and execute trades. It features a dark Bloomberg-terminal aesthetic with real-time price updates, portfolio visualizations, and an AI copilot sidebar. Built entirely by coding agents as the capstone project for an agentic AI coding course.
 
 ## Core Value
 
@@ -12,37 +12,39 @@ Users can watch live-streaming prices, trade a simulated portfolio, and chat wit
 
 ### Validated
 
-- ✓ Market data simulator with GBM and correlated moves — existing
-- ✓ Massive API client for real market data (optional) — existing
-- ✓ Abstract market data interface (strategy pattern) — existing
-- ✓ Thread-safe price cache — existing
-- ✓ SSE streaming endpoint (`/api/stream/prices`) — existing
-- ✓ Environment-gated data source factory — existing
-- ✓ Backend project structure (FastAPI + uv) — existing
+- ✓ Market data simulator with GBM and correlated moves — v1.0
+- ✓ Massive API client for real market data (optional) — v1.0
+- ✓ Abstract market data interface (strategy pattern) — v1.0
+- ✓ Thread-safe price cache — v1.0
+- ✓ SSE streaming endpoint (`/api/stream/prices`) — v1.0
+- ✓ Environment-gated data source factory — v1.0
+- ✓ Backend project structure (FastAPI + uv) — v1.0
+- ✓ Database layer: Neon Postgres schema, connection pool, seed data — v1.0
+- ✓ Portfolio API: positions, cash balance, total value, unrealized P&L — v1.0
+- ✓ Trade execution: market orders, validation (cash/shares), instant fill — v1.0
+- ✓ Portfolio history: snapshots every 30s + after trades, 24h retention — v1.0
+- ✓ Watchlist CRUD: add/remove tickers, return tickers with live prices — v1.0
+- ✓ LLM chat integration: LiteLLM → OpenRouter (Cerebras), structured outputs — v1.0
+- ✓ AI trade proposals with user confirmation — v1.0
+- ✓ Watchlist auto-execution from LLM responses — v1.0
+- ✓ Chat persistence: last 20 messages, actions stored as JSONB — v1.0
+- ✓ Health check endpoint — v1.0
+- ✓ Next.js frontend: dark terminal aesthetic, Tailwind CSS — v1.0
+- ✓ Watchlist panel: live prices, flash animations, sparkline charts — v1.0
+- ✓ Main chart area: selected ticker detail chart (Lightweight Charts) — v1.0
+- ✓ Portfolio heatmap: treemap sized by weight, colored by P&L — v1.0
+- ✓ P&L chart: portfolio value over time — v1.0
+- ✓ Positions table: ticker, qty, avg cost, current price, unrealized P&L — v1.0
+- ✓ Trade bar: ticker/quantity inputs, buy/sell buttons — v1.0
+- ✓ AI chat panel: collapsible sidebar, message history, loading state, inline action cards — v1.0
+- ✓ Header: portfolio total value (live), connection status dot, cash balance — v1.0
+- ✓ SSE client: EventSource connection with auto-reconnect — v1.0
+- ✓ Docker: Dockerfiles for frontend + backend, docker-compose.yml — v1.0
+- ✓ E2E tests: Playwright in docker-compose.test.yml with LLM_MOCK=true — v1.0
 
 ### Active
 
-- [ ] Database layer: Neon Postgres schema, connection pool, seed data
-- [ ] Portfolio API: positions, cash balance, total value, unrealized P&L
-- [ ] Trade execution: market orders, validation (cash/shares), instant fill
-- [ ] Portfolio history: snapshots every 30s + after trades, 24h retention
-- [ ] Watchlist CRUD: add/remove tickers, return tickers with live prices
-- [ ] LLM chat integration: LiteLLM → OpenRouter (Cerebras), structured outputs
-- [ ] AI auto-execution: trades and watchlist changes from LLM responses
-- [ ] Chat persistence: last 20 messages, actions stored as JSONB
-- [ ] Health check endpoint
-- [ ] Next.js frontend: dark terminal aesthetic, Tailwind CSS
-- [ ] Watchlist panel: live prices, flash animations, sparkline charts
-- [ ] Main chart area: selected ticker detail chart (Lightweight Charts)
-- [ ] Portfolio heatmap: treemap sized by weight, colored by P&L
-- [ ] P&L chart: portfolio value over time
-- [ ] Positions table: ticker, qty, avg cost, current price, unrealized P&L
-- [ ] Trade bar: ticker/quantity inputs, buy/sell buttons
-- [ ] AI chat panel: collapsible sidebar, message history, loading state, inline action confirmations
-- [ ] Header: portfolio total value (live), connection status dot, cash balance
-- [ ] SSE client: EventSource connection with auto-reconnect
-- [ ] Docker: Dockerfiles for frontend + backend, docker-compose.yml
-- [ ] E2E tests: Playwright in docker-compose.test.yml with LLM_MOCK=true
+(None — v1.0 shipped. Use `/gsd:new-milestone` for v2 requirements.)
 
 ### Out of Scope
 
@@ -56,17 +58,18 @@ Users can watch live-streaming prices, trade a simulated portfolio, and chat wit
 
 ## Context
 
-**Existing codebase:** The market data subsystem is complete with 113 passing tests and 96% line coverage. It includes a GBM simulator, Massive API client, price cache, SSE streaming, and factory pattern — all behind an abstract interface. The backend is a uv-managed FastAPI project. The frontend directory is empty.
+**Shipped v1.0:** 7 phases, 15 plans, 53 requirements satisfied. 1,836 LOC TypeScript (frontend), 2,298 LOC Python (backend). 124 git commits over 24 days.
 
 **Tech stack (locked):** FastAPI (Python 3.12, uv) backend, Next.js (TypeScript) frontend, Neon serverless Postgres, SSE for real-time data, LiteLLM → OpenRouter (Cerebras) for AI, Docker Compose for orchestration.
 
-**Visual design:** Dark Bloomberg-terminal aesthetic. Backgrounds ~`#0d1117`, accent yellow `#ecad0a`, blue primary `#209dd7`, purple secondary `#753991`. Price flash animations (green/red fade over ~500ms). Desktop-first, data-dense layout.
+**Visual design:** Dark Bloomberg-terminal aesthetic. Backgrounds ~`#0d1117`, accent yellow `#ecad0a`, blue primary `#209dd7`, purple accent `#753991`. Price flash animations (green/red fade over ~500ms). Desktop-first, data-dense layout.
 
-**Market data behavior:** Simulator uses GBM with correlated moves and random events. Updates ~500ms. Massive API polls on configurable interval (15s free tier). Both write to shared price cache; SSE reads from cache.
-
-**Database:** Neon serverless Postgres via `DATABASE_URL`. Tables: users, users_profile, watchlist, positions, trades, portfolio_snapshots, chat_messages. Auto-init on startup via FastAPI lifespan. Default user pre-seeded with $10,000 cash and 10 watchlist tickers.
-
-**LLM integration:** Uses LiteLLM via OpenRouter with Cerebras inference. Structured output schema returns message + optional trades + optional watchlist_changes. Auto-executes trades (simulated money, zero stakes). Mock mode (`LLM_MOCK=true`) for testing.
+**Known tech debt (6 items, no blockers):**
+- CHAT-05: Trades user-confirmed instead of auto-executed (deliberate improvement)
+- VIZ-01: Change% baseline is tick-to-tick, not seed-price
+- Stale CORS middleware and stub comment (cosmetic)
+- WatchlistPanel useEffect dependency loop (continuous polling)
+- SSE Route Handler missing chunked encoding header
 
 ## Constraints
 
@@ -81,14 +84,16 @@ Users can watch live-streaming prices, trade a simulated portfolio, and chat wit
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| SSE over WebSockets | One-way push is all we need; simpler, universal browser support | — Pending |
-| Next.js rewrites for API proxy | No CORS, single user-facing port, transparent to client code | — Pending |
-| Neon serverless Postgres | Persistent data without Docker volumes, proper SQL types, free tier | — Pending |
-| Market orders only | Eliminates order book complexity, dramatically simpler portfolio math | — Pending |
-| LLM auto-execution | Simulated environment, zero stakes, impressive demo, agentic AI showcase | — Pending |
-| Lightweight Charts | Canvas-based, performant for real-time financial data | — Pending |
+| SSE over WebSockets | One-way push is all we need; simpler, universal browser support | ✓ Good — works reliably, EventSource auto-reconnects |
+| Next.js rewrites for API proxy | No CORS, single user-facing port, transparent to client code | ✓ Good — SSE required Route Handler proxy workaround |
+| Neon serverless Postgres | Persistent data without Docker volumes, proper SQL types, free tier | ✓ Good — zero-config persistence |
+| Market orders only | Eliminates order book complexity, dramatically simpler portfolio math | ✓ Good — kept scope manageable |
+| Trade proposals (not auto-execute) | Safer UX; user confirms trades via ProposedTradeCard | ✓ Good — diverged from spec, better UX |
+| Lightweight Charts | Canvas-based, performant for real-time financial data | ✓ Good — smooth real-time rendering |
 | uv for Python | Fast, modern, reproducible lockfile | ✓ Good |
 | Strategy pattern for market data | Clean abstraction, both sources interchangeable | ✓ Good |
+| Recharts for portfolio viz | Treemap for heatmap, AreaChart for P&L | ✓ Good — declarative, React-native |
+| SSE via Route Handler proxy | Avoid EventSource CORS issues in Docker | ✓ Good — solved buffering problem |
 
 ---
-*Last updated: 2026-03-01 after initialization*
+*Last updated: 2026-03-03 after v1.0 milestone*
