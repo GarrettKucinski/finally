@@ -1,9 +1,18 @@
 @import "tailwindcss";
 
+/* Hide system scrollbars — content still scrollable */
+* {
+  scrollbar-width: none;            /* Firefox */
+}
+*::-webkit-scrollbar {
+  display: none;                    /* Chrome, Safari, Edge */
+}
+
 @theme {
   --color-accent-yellow: #ecad0a;
   --color-primary-blue: #209dd7;
   --color-secondary-purple: #753991;
+  --color-accent-purple: #753991;
   --color-surface-primary: #0d1117;
   --color-surface-secondary: #161b22;
   --color-surface-tertiary: #21262d;
