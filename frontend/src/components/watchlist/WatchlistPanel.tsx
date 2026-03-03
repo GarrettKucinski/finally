@@ -1,25 +1,22 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { usePriceStore } from "@/stores/priceStore";
-import { fetchWatchlist, addTicker, removeTicker } from "@/lib/api";
 import { PriceFlash } from "@/components/ui/PriceFlash";
 import { Sparkline } from "@/components/watchlist/Sparkline";
+import { addTicker, fetchWatchlist, removeTicker } from "@/lib/api";
 import { formatPercent } from "@/lib/format";
+import { usePriceStore } from "@/stores/priceStore";
+import { useCallback, useEffect, useState } from "react";
 
 const EMPTY_HISTORY: number[] = [];
 
-function WatchlistRow({
-  ticker,
-  onRemove,
-  selected,
-  onSelect,
-}: {
+interface WatchlistRowProps {
   ticker: string;
   onRemove: (ticker: string) => void;
   selected?: boolean;
   onSelect?: (ticker: string) => void;
-}) {
+}
+
+function WatchlistRow({ ticker, onRemove, selected, onSelect }: WatchlistRowProps) {
   const priceData = usePriceStore((s) => s.prices[ticker]);
   const history = usePriceStore((s) => s.priceHistory[ticker] ?? EMPTY_HISTORY);
 
@@ -30,7 +27,7 @@ function WatchlistRow({
         selected ? "bg-surface-tertiary" : "hover:bg-surface-tertiary"
       }`}
     >
-      <span className="w-14 flex-shrink-0 font-medium text-text-primary">
+      <span className="w-14 shrink-0 font-medium text-text-primary">
         {ticker}
       </span>
 
@@ -60,12 +57,12 @@ function WatchlistRow({
         )}
       </div>
 
-      <div className="w-16 flex-shrink-0 flex items-center justify-center">
+      <div className="w-16 shrink-0 flex items-center justify-center">
         <Sparkline data={history} width={60} height={20} />
       </div>
 
       <button
-        onClick={() => onRemove(ticker)}
+        onClick={(e) => { e.stopPropagation(); onRemove(ticker); }}
         className="ml-1 opacity-0 transition-opacity group-hover:opacity-100 text-text-muted hover:text-price-down"
         title={`Remove ${ticker}`}
       >
@@ -93,13 +90,13 @@ export function WatchlistPanel({
       const items = await fetchWatchlist();
       setTickers(items.map((item) => item.ticker));
     } catch {
-      // Error already toasted by apiFetch
+      console.error("Error fetching watchlist");
     }
   }, []);
 
   useEffect(() => {
     loadWatchlist();
-  }, [loadWatchlist]);
+  }, [tickers]);
 
   const handleAdd = async () => {
     const ticker = newTicker.trim().toUpperCase();
