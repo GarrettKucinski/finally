@@ -117,16 +117,32 @@ Plans:
 - [x] 06-01-PLAN.md -- Dockerfiles, .dockerignore, docker-compose.yml, next.config.ts standalone output
 - [x] 06-02-PLAN.md -- Playwright E2E test suite with docker-compose.test.yml
 
+### Phase 7: Frontend Polish & E2E Fixes
+**Goal**: Close minor tech debt from milestone audit — fix CSS token mismatch, floating button accessible name, E2E test selector, and watchlist remove propagation
+**Depends on**: Phase 5, Phase 6
+**Requirements**: UI-02, VIZ-09, OPS-06
+**Gap Closure**: Closes tech debt items from v1.0-MILESTONE-AUDIT.md
+**Success Criteria** (what must be TRUE):
+  1. Purple accent color renders correctly on ChatPanel Send button, user message bubbles, and floating AI toggle button
+  2. Floating chat button has accessible name that matches the E2E test selector
+  3. Chat collapse/reopen E2E test passes
+  4. Clicking the watchlist remove button does not simultaneously select the ticker being removed
+**Plans**: 1 plan
+
+Plans:
+- [ ] 07-01-PLAN.md -- CSS token fix, button accessible name, E2E selector update, stopPropagation
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Database Foundation | 0/2 | Complete    | 2026-03-02 |
-| 2. Portfolio & Watchlist APIs | 1/2 | In Progress | - |
-| 3. LLM Chat Integration | 0/2 | Not started | - |
+| 1. Database Foundation | 2/2 | Complete    | 2026-03-02 |
+| 2. Portfolio & Watchlist APIs | 2/2 | Complete | 2026-03-02 |
+| 3. LLM Chat Integration | 2/2 | Complete | 2026-03-02 |
 | 4. Frontend Foundation | 3/3 | Complete | 2026-03-02 |
 | 5. Visualizations & Chat Panel | 3/3 | Complete | 2026-03-02 |
 | 6. Docker & E2E Tests | 2/2 | Complete | 2026-03-02 |
+| 7. Frontend Polish & E2E Fixes | 0/1 | Not started | - |
